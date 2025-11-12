@@ -5,16 +5,16 @@
   display: flex;
   justify-content: space-between; /* Ini akan mendorong 'navbar-left' dan 'navbar-right' ke ujung */
   align-items: center;
-  padding: 1.5rem 3rem;
+  padding: 1.5rem 4.5rem;
   background-color: var(--color-background);
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
 }
 
 /* --- STYLING BARU UNTUK GRUP KIRI & KANAN --- */
 .navbar-left, .navbar-right {
   display: flex;
   align-items: center;
-  gap: 2rem; /* Jarak antar item di dalam grup */
+  gap: 3rem; /* Jarak antar item di dalam grup */
 }
 
 /* Styling Logo (Tidak berubah) */
@@ -94,5 +94,5 @@
 }
 
 .navbar-cta:hover {
-  background-color: #555; /* Warna abu sedikit lebih terang saat hover */
+  background-color: var(--color-tombol-hero-hover); /* Warna abu sedikit lebih terang saat hover */
 }

@@ -5,13 +5,21 @@
   /* Font */
   --font-head: 'Cardo', serif;
   --font-body: 'Merriweather', serif;
+  --font-link: 'Arial', sans-serif; /* Tambahkan font untuk link, atau bisa pakai font-body */
+
 
   /* Warna */
   --color-tombol-oren: #FFA500; /* Ini oranye standar, ganti jika perlu */
   --color-tombol-abu: #333333;  /* Ini abu tua standar, ganti jika perlu */
+  --color-tombol-hijau: #4CAF50; /* Hijau untuk tombol Hero */
 
-  --color-background: #dbd7d1; /* Ganti ini sesuai warna background-mu */
+  --color-background: #F8F9FA; /* UBAH: Lebih putih, seperti di referensi */
   --color-text: #212121;       /* Warna teks standar */
+
+  /* --- TAMBAHKAN INI --- */
+  --color-tombol-hero-primer: #D68F55; /* Warna cokelat oranye seperti referensi */
+  --color-tombol-hero-hover: #B2703C;  /* Sedikit lebih gelap untuk efek hover */
+  /* --- SAMPAI SINI --- */
 }
 
 /* 2. Terapkan Style Global ke Body */
