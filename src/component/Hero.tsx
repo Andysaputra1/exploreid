@@ -7,13 +7,14 @@ const Hero: React.FC = () => {
   return (
     <section className="hero">
       <div className="hero-content">
-        <h1>WANDER</h1>
+        <h1>Reservasi.id</h1>
         <p>
-          Discover breathtaking destinations across the Philippines with curated
-          tours, local insights, and hassle-free planning all in one platform.
+          Temukan cara termudah dan tercepat untuk memesan tiket ferry.
+          Nikmati perjalanan hemat ke Singapura, Batam, dan Malaysia,
+          semua dalam satu platform
         </p>
         <div className="hero-buttons">
-          <button className="btn btn-primary">Plan Your Trip</button>
+          <button className="btn btn-primary">Book Your Trip</button>
           <button className="btn btn-secondary">Explore Destinations</button>
         </div>
       </div>

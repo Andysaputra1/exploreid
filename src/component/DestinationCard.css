@@ -1,0 +1,66 @@
+/* src/component/DestinationCard.css */
+
+.dest-card {
+  position: relative;
+  height: 400px; /* Tinggi kartu, bisa disesuaikan */
+  border-radius: 16px;
+  overflow: hidden; /* Penting agar gambar tidak keluar dari radius */
+  color: white;
+  
+  /* Atur gambar latar belakang */
+  background-size: cover;
+  background-position: center;
+  
+  /* Efek 'zoom' halus saat hover */
+  transition: transform 0.3s ease;
+}
+
+.dest-card:hover {
+  transform: scale(1.03); /* Sedikit membesar saat di-hover */
+}
+
+/* Gradien gelap dari bawah ke atas agar teks terbaca jelas */
+.dest-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+/* Styling harga "mulai dari..." */
+.dest-card-price {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: rgba(0, 0, 0, 0.4); /* Latar belakang semi-transparan */
+  backdrop-filter: blur(5px); /* Efek 'glass' */
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Konten teks di bagian bawah */
+.dest-card-content {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+}
+
+.dest-card-content h3 {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  margin-bottom: 0.25rem;
+}
+
+.dest-card-content p {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  margin: 0;
+  opacity: 0.9;
+}

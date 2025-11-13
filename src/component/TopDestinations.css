@@ -1,0 +1,75 @@
+/* src/component/TopDestinations.css */
+
+.dest-section {
+  padding: 4rem 4.5rem; /* Samakan padding-nya dengan Hero section */
+  background-color: var(--color-background); /* Ganti jika beda */
+}
+
+/* Header (Judul, Tombol, Paragraf) */
+.dest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Buat rata atas */
+  margin-bottom: 2rem;
+}
+
+.dest-header-left {
+  flex: 1; /* Ambil 1 bagian */
+}
+.dest-header-right {
+  flex: 1; /* Ambil 1 bagian */
+  padding-left: 2rem;
+}
+
+.dest-header-left h2 {
+  font-family: var(--font-head);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.dest-header-right p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 450px;
+  margin-top: 0;
+}
+
+/* Tombol "View more" */
+.dest-view-more {
+  /* Kita gunakan style yang sama dengan tombol 'Book now' */
+  background-color: var(--color-tombol-abu);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.dest-view-more:hover {
+  background-color: var(--color-tombol-hero-hover); /* Efek cokelat */
+}
+
+
+/* List Kartu Destinasi */
+.dest-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 kolom sama rata */
+  gap: 2rem; /* Jarak antar kartu */
+}
+
+.dest-container-card {
+  background-color: #F7F9FA; /* Warna abu-abu muda (seperti referensi) */
+  border-radius: 24px;       /* Sudut yang sangat bulat */
+  padding: 2.5rem;           /* Jarak di DALAM kartu besar */
+}
+
+.dest-section {
+  padding: 4rem 4.5rem; /* Biarkan ini, ini jarak di LUAR kartu besar */
+  /* ... sisa style ... */
+}
