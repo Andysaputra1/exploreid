@@ -175,3 +175,127 @@
   background-color: #d48800;
   transform: translateY(-2px);
 }
+
+/* ... CSS Navbar yang lama biarkan saja ... */
+
+
+/* --- STYLING MODAL POP-UP (TAMBAHKAN INI DI BAWAH) --- */
+
+/* 1. Layar Belakang Gelap */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Hitam transparan */
+  backdrop-filter: blur(5px); /* Efek blur di background */
+  z-index: 2000; /* Harus lebih tinggi dari Navbar (1000) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+/* 2. Kartu Putih */
+.modal-card {
+  background: white;
+  width: 90%;
+  max-width: 400px; /* Lebar maksimal kartu */
+  padding: 30px;
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  animation: slideUp 0.3s ease;
+}
+
+/* Tombol Close (X) */
+.btn-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #f0f0f0;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  color: #666;
+  transition: 0.2s;
+}
+.btn-close:hover {
+  background: #ff4d4d;
+  color: white;
+}
+
+/* Header Modal */
+.modal-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.modal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 5px;
+}
+.modal-header p {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* Form Input */
+.form-group {
+  margin-bottom: 15px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+}
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  font-family: inherit;
+}
+.form-group input:focus {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(242, 159, 5, 0.1);
+}
+
+/* Tombol Kirim WA */
+.btn-submit-wa {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-orange);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+.btn-submit-wa:hover {
+  background-color: var(--primary-orange-hover);
+  transform: translateY(-2px);
+}
+
+/* Animasi Muncul */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
