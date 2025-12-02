@@ -1,0 +1,177 @@
+/* Navbar Container Utama */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  z-index: 1000;
+  transition: all 0.4s ease;
+  background-color: transparent; /* Transparan di awal */
+  display: flex;
+  align-items: center;
+}
+
+/* --- STATE 1: SAAT DI-SCROLL (Background Putih, Teks Hitam) --- */
+.navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-soft);
+  height: 70px;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* --- 1. BRANDING (LOGO & NAMA) --- */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.brand-logo {
+  height: 40px;
+  width: auto;
+}
+
+/* Default: Teks Putih (agar kelihatan di Hero gelap) */
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white; /* <--- PENTING: Putih di awal */
+  letter-spacing: -0.5px;
+  transition: color 0.3s ease;
+}
+
+/* Saat Scrolled: Teks jadi Hitam */
+.navbar.scrolled .brand-name {
+  color: var(--primary-dark);
+}
+
+/* --- 2. LINKS (MENU) --- */
+.navbar-links {
+  display: flex;
+  gap: 32px;
+}
+
+/* Default: Link Putih */
+.navbar-links a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9); /* <--- PENTING: Putih agak transparan */
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover, .navbar-links a.active {
+  color: white;
+  font-weight: 600;
+}
+
+/* Saat Scrolled: Link jadi Abu-abu */
+.navbar.scrolled .navbar-links a {
+  color: var(--text-grey);
+}
+.navbar.scrolled .navbar-links a:hover {
+  color: var(--primary-dark);
+}
+
+/* Garis Bawah Hover (Oranye) */
+.navbar-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--primary-orange);
+  transition: width 0.3s ease;
+}
+.navbar-links a:hover::after {
+  width: 100%;
+}
+
+/* --- 3. ACTIONS (SEARCH & BUTTON) --- */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Search Bar */
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  /* Background semi-transparan putih biar nyatu sama hero */
+  background-color: rgba(255, 255, 255, 0.15); 
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s;
+  backdrop-filter: blur(5px);
+}
+
+/* Saat Scrolled: Search bar jadi abu terang solid */
+.navbar.scrolled .search-wrapper {
+  background-color: #F0F2F5;
+  border-color: transparent;
+}
+
+.search-wrapper:focus-within {
+  background-color: #fff !important; /* Kalau diklik jadi putih solid */
+  border-color: var(--primary-orange) !important;
+  box-shadow: 0 0 0 4px rgba(242, 159, 5, 0.2);
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  color: white; /* Ikon putih di awal */
+  margin-right: 8px;
+}
+.navbar.scrolled .search-icon {
+  color: #999; /* Ikon abu saat scroll */
+}
+
+.search-wrapper input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.9rem;
+  width: 120px;
+  font-family: inherit;
+  color: white; /* Teks ketikan putih */
+}
+.navbar.scrolled .search-wrapper input {
+  color: var(--primary-dark); /* Teks ketikan hitam saat scroll */
+}
+
+.search-wrapper input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+.navbar.scrolled .search-wrapper input::placeholder {
+  color: #999;
+}
+
+/* Tombol Book Now */
+.btn-primary {
+  background-color: #F29F05;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow biar tombol pop-up */
+}
+
+.btn-primary:hover {
+  background-color: #d48800;
+  transform: translateY(-2px);
+}

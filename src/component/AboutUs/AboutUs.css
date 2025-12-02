@@ -1,0 +1,155 @@
+.footer-section {
+  background-color: #111111; /* Hitam pekat elegan */
+  color: #ffffff;
+  padding-top: 80px;
+  margin-top: auto; /* Agar selalu di paling bawah */
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 50px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Kolom 1: Brand */
+.footer-brand {
+  flex: 2;
+  min-width: 300px;
+}
+
+.footer-brand .brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.footer-brand img {
+  height: 40px;
+  width: auto;
+  /* Filter agar logo SVG hitam jadi putih (opsional, tergantung logo aslimu) */
+  filter: brightness(0) invert(1); 
+}
+
+.footer-brand h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.footer-brand p {
+  color: #aaa;
+  line-height: 1.8;
+  max-width: 400px;
+}
+
+/* Kolom 2 & 3: Judul */
+.footer-links h3,
+.footer-contact h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 25px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Garis bawah oranye di bawah judul */
+.footer-links h3::after,
+.footer-contact h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 40px;
+  height: 3px;
+  background-color: var(--primary-orange);
+  border-radius: 2px;
+}
+
+/* Kolom 2: Links */
+.footer-links {
+  flex: 1;
+  min-width: 150px;
+}
+
+.footer-links ul li {
+  margin-bottom: 12px;
+}
+
+.footer-links a {
+  color: #aaa;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: var(--primary-orange);
+  padding-left: 5px; /* Efek geser dikit saat hover */
+}
+
+/* Kolom 3: Kontak */
+.footer-contact {
+  flex: 1.5;
+  min-width: 250px;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 15px;
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.contact-list a {
+  color: #aaa;
+}
+
+.contact-list a:hover {
+  color: var(--primary-orange);
+  text-decoration: underline;
+}
+
+/* Social Media Icons */
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.social-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: 0.3s;
+}
+
+.social-btn:hover {
+  background: var(--primary-orange);
+  transform: translateY(-3px);
+}
+
+/* Footer Bottom (Copyright) */
+.footer-bottom {
+  padding: 25px 0;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
