@@ -1,20 +1,23 @@
-/* Navbar Container Utama */
+/* =========================================
+   1. NAVBAR CONTAINER & LAYOUT UTAMA
+   ========================================= */
+
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: var(--nav-height);
+  height: var(--nav-height, 80px);
   z-index: 1000;
   transition: all 0.4s ease;
-  background-color: transparent; /* Transparan di awal */
+  background-color: transparent;
   display: flex;
   align-items: center;
 }
 
-/* --- STATE 1: SAAT DI-SCROLL (Background Putih, Teks Hitam) --- */
+/* Saat Discroll: Putih & Shadow */
 .navbar.scrolled {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   height: 70px;
 }
 
@@ -23,9 +26,26 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  position: relative;
 }
 
-/* --- 1. BRANDING (LOGO & NAMA) --- */
+/* Wrapper Logo & Hamburger (Supaya rapi di HP) */
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Wrapper Menu & Action (Links + Search + Button) */
+.navbar-menu-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 32px; /* Jarak antara Menu Links dan Bagian Kanan */
+}
+
+/* =========================================
+   2. BRANDING (LOGO)
+   ========================================= */
 .navbar-brand {
   display: flex;
   align-items: center;
@@ -33,108 +53,69 @@
   cursor: pointer;
 }
 
-.brand-logo {
-  height: 40px;
-  width: auto;
-}
+.brand-logo { height: 40px; width: auto; }
 
-/* Default: Teks Putih (agar kelihatan di Hero gelap) */
 .brand-name {
   font-size: 1.5rem;
   font-weight: 700;
-  color: white; /* <--- PENTING: Putih di awal */
+  color: white; /* Default Putih */
   letter-spacing: -0.5px;
   transition: color 0.3s ease;
 }
 
-/* Saat Scrolled: Teks jadi Hitam */
-.navbar.scrolled .brand-name {
-  color: var(--primary-dark);
-}
+.navbar.scrolled .brand-name { color: #222; } /* Saat Scroll Hitam */
 
-/* --- 2. LINKS (MENU) --- */
+/* =========================================
+   3. LINKS (MENU TENGAH)
+   ========================================= */
 .navbar-links {
   display: flex;
   gap: 32px;
+  list-style: none;
+  margin: 0; padding: 0;
 }
 
-/* Default: Link Putih */
 .navbar-links a {
   font-size: 0.95rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9); /* <--- PENTING: Putih agak transparan */
+  color: rgba(255, 255, 255, 0.9);
   position: relative;
+  text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.navbar-links a:hover, .navbar-links a.active {
-  color: white;
-  font-weight: 600;
+.navbar.scrolled .navbar-links a { color: #666; }
+.navbar-links a:hover, .navbar.scrolled .navbar-links a:hover {
+  color: #F29F05; /* Oranye saat hover */
 }
 
-/* Saat Scrolled: Link jadi Abu-abu */
-.navbar.scrolled .navbar-links a {
-  color: var(--text-grey);
-}
-.navbar.scrolled .navbar-links a:hover {
-  color: var(--primary-dark);
-}
-
-/* Garis Bawah Hover (Oranye) */
-.navbar-links a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--primary-orange);
-  transition: width 0.3s ease;
-}
-.navbar-links a:hover::after {
-  width: 100%;
-}
-
-/* --- 3. ACTIONS (SEARCH & BUTTON) --- */
+/* =========================================
+   4. ACTIONS (SEARCH & BUTTON)
+   ========================================= */
 .navbar-actions {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* Search Bar */
+/* --- Search Bar --- */
+.search-container { position: relative; }
+
 .search-wrapper {
   display: flex;
   align-items: center;
-  /* Background semi-transparan putih biar nyatu sama hero */
-  background-color: rgba(255, 255, 255, 0.15); 
+  background-color: #ffffff; /* Putih Solid */
   padding: 8px 16px;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  border: 1px solid #e0e0e0; 
   transition: all 0.3s;
-  backdrop-filter: blur(5px);
-}
-
-/* Saat Scrolled: Search bar jadi abu terang solid */
-.navbar.scrolled .search-wrapper {
-  background-color: #F0F2F5;
-  border-color: transparent;
-}
-
-.search-wrapper:focus-within {
-  background-color: #fff !important; /* Kalau diklik jadi putih solid */
-  border-color: var(--primary-orange) !important;
-  box-shadow: 0 0 0 4px rgba(242, 159, 5, 0.2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .search-icon {
-  width: 18px;
-  height: 18px;
-  color: white; /* Ikon putih di awal */
+  width: 18px; height: 18px;
+  color: #666;
   margin-right: 8px;
-}
-.navbar.scrolled .search-icon {
-  color: #999; /* Ikon abu saat scroll */
 }
 
 .search-wrapper input {
@@ -142,22 +123,38 @@
   background: transparent;
   outline: none;
   font-size: 0.9rem;
-  width: 120px;
+  width: 150px;
   font-family: inherit;
-  color: white; /* Teks ketikan putih */
-}
-.navbar.scrolled .search-wrapper input {
-  color: var(--primary-dark); /* Teks ketikan hitam saat scroll */
+  color: #333; /* Teks Hitam */
 }
 
-.search-wrapper input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-.navbar.scrolled .search-wrapper input::placeholder {
-  color: #999;
+.search-wrapper input::placeholder { color: #999; }
+
+/* --- Search Dropdown --- */
+.search-dropdown {
+  position: absolute;
+  top: 50px; left: 0;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  padding: 10px;
+  z-index: 1100;
+  border: 1px solid #eee;
 }
 
-/* Tombol Book Now */
+.search-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px; border-radius: 8px; cursor: pointer;
+  transition: 0.2s;
+}
+.search-item:hover { background-color: #f5f5f5; }
+.search-item img { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
+.item-name { font-size: 0.9rem; font-weight: 600; color: #333; display: block; }
+.item-type { font-size: 0.75rem; color: #888; }
+.search-empty { padding: 15px; text-align: center; color: #999; font-size: 0.9rem; }
+
+/* --- Button Book Now --- */
 .btn-primary {
   background-color: #F29F05;
   color: white;
@@ -168,134 +165,179 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow biar tombol pop-up */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
-
-.btn-primary:hover {
-  background-color: #d48800;
-  transform: translateY(-2px);
-}
-
-/* ... CSS Navbar yang lama biarkan saja ... */
+.btn-primary:hover { background-color: #d48800; transform: translateY(-2px); }
 
 
-/* --- STYLING MODAL POP-UP (TAMBAHKAN INI DI BAWAH) --- */
-
-/* 1. Layar Belakang Gelap */
+/* =========================================
+   5. MODAL POP-UP (BOOK NOW)
+   ========================================= */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Hitam transparan */
-  backdrop-filter: blur(5px); /* Efek blur di background */
-  z-index: 2000; /* Harus lebih tinggi dari Navbar (1000) */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex; justify-content: center; align-items: center;
   animation: fadeIn 0.3s ease;
 }
 
-/* 2. Kartu Putih */
 .modal-card {
   background: white;
-  width: 90%;
-  max-width: 400px; /* Lebar maksimal kartu */
-  padding: 30px;
-  border-radius: 20px;
+  width: 90%; max-width: 400px;
+  padding: 30px; border-radius: 20px;
   position: relative;
   box-shadow: 0 20px 50px rgba(0,0,0,0.3);
   animation: slideUp 0.3s ease;
 }
 
-/* Tombol Close (X) */
 .btn-close {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: #f0f0f0;
-  border: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-weight: bold;
-  color: #666;
-  transition: 0.2s;
+  position: absolute; top: 15px; right: 15px;
+  background: #f0f0f0; border: none;
+  width: 30px; height: 30px; border-radius: 50%;
+  cursor: pointer; font-weight: bold; color: #666;
 }
-.btn-close:hover {
-  background: #ff4d4d;
-  color: white;
-}
+.btn-close:hover { background: #ff4d4d; color: white; }
 
-/* Header Modal */
-.modal-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.modal-header h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-dark);
-  margin-bottom: 5px;
-}
-.modal-header p {
-  color: #888;
-  font-size: 0.9rem;
-}
+.modal-header { text-align: center; margin-bottom: 20px; }
+.modal-header h3 { font-size: 1.5rem; font-weight: 700; color: #222; margin-bottom: 5px; }
+.modal-header p { color: #888; font-size: 0.9rem; }
 
-/* Form Input */
-.form-group {
-  margin-bottom: 15px;
-}
-.form-group label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 5px;
-}
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; }
 .form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 1rem;
-  outline: none;
-  font-family: inherit;
+  width: 100%; padding: 12px; border: 1px solid #ddd;
+  border-radius: 10px; font-size: 1rem; outline: none;
 }
-.form-group input:focus {
-  border-color: var(--primary-orange);
-  box-shadow: 0 0 0 3px rgba(242, 159, 5, 0.1);
-}
-
-/* Tombol Kirim WA */
 .btn-submit-wa {
+  width: 100%; padding: 12px; background-color: #F29F05;
+  color: white; font-weight: 600; border: none; border-radius: 50px;
+  cursor: pointer; margin-top: 10px;
+}
+
+/* =========================================
+   6. RESPONSIVE MOBILE (HP & TABLET)
+   ========================================= */
+
+/* Default: Sembunyikan tombol hamburger di Desktop */
+.hamburger-btn { display: none; }
+
+/* Saat layar kurang dari 768px (Tablet & HP) */
+@media (max-width: 768px) {
+  
+  .navbar-content {
+    /* Logo & Menu jadi susunan vertikal */
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 0;
+  }
+
+  /* Logo & Hamburger Sejajar di baris pertama */
+  .brand-wrapper {
+    width: 100%;
+    /* justify-content: space-between sudah di set di atas */
+  }
+
+  /* Munculkan Hamburger */
+  .hamburger-btn {
+    display: block;
+    background: none; border: none;
+    font-size: 1.8rem; cursor: pointer;
+    color: white; transition: 0.3s;
+  }
+  .navbar.scrolled .hamburger-btn { color: #222; }
+
+  /* Sembunyikan Menu secara default */
+  .navbar-menu-wrapper {
+    display: none; /* Hilang */
+    width: 100%;
+    flex-direction: column; /* Menu turun ke bawah */
+    gap: 20px;
+    padding: 20px;
+    background-color: white; /* Background putih saat menu buka */
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-top: 15px;
+    
+    /* Ubah warna teks link jadi hitam karena background putih */
+  }
+  
+  .navbar-menu-wrapper .navbar-links a { color: #333; }
+
+  /* Class .mobile-open ditambahkan via React saat hamburger diklik */
+  .navbar-menu-wrapper.mobile-open {
+    display: flex; /* Munculkan */
+  }
+
+  /* Susun link vertikal */
+  .navbar-links {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    gap: 15px;
+  }
+
+  /* Susun Actions vertikal */
+  .navbar-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-container, .search-wrapper input { width: 100%; }
+  .btn-primary { width: 100%; }
+}
+
+/* Animasi Keyframes */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ... kode .navbar-links a sebelumnya ... */
+
+/* TAMBAHKAN KODE INI UNTUK EFEK GARIS BAWAH */
+
+.navbar-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;             /* Awalnya lebar 0 (tidak terlihat) */
+  height: 2px;          /* Ketebalan garis */
+  bottom: -4px;         /* Jarak garis di bawah teks */
+  left: 0;
+  background-color: #F29F05; /* Warna Oranye */
+  transition: width 0.3s ease-in-out; /* Animasi gerak */
+}
+
+.navbar-links a:hover::after {
+  width: 100%; /* Saat di-hover, lebar jadi 100% */
+}
+
+/* Biar link yang sedang aktif (misal Home) garisnya tetap muncul */
+.navbar-links a.active::after {
   width: 100%;
-  padding: 12px;
-  background-color: var(--primary-orange);
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 10px;
-  transition: 0.3s;
-}
-.btn-submit-wa:hover {
-  background-color: var(--primary-orange-hover);
-  transform: translateY(-2px);
 }
 
-/* Animasi Muncul */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* ... di dalam @media (max-width: 768px) ... */
 
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+  /* Pastikan konten navbar punya padding yang pas di HP */
+  .navbar-content {
+    padding: 15px 20px; 
+  }
+
+  /* Tombol Hamburger */
+  .hamburger-btn {
+    display: block;
+    background: none; 
+    border: none;
+    font-size: 1.8rem; 
+    cursor: pointer;
+    z-index: 1100; /* Pastikan di atas segalanya */
+    
+    /* Warna: Putih kalau di atas, Hitam kalau discroll */
+    color: white; 
+    transition: 0.3s;
+  }
+  
+  /* Kalau Navbar background putih (scrolled), hamburger jadi hitam */
+  .navbar.scrolled .hamburger-btn { 
+    color: #333; 
+  }

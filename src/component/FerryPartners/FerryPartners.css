@@ -113,3 +113,45 @@
     justify-content: space-between;
   }
 }
+
+/* --- RESPONSIVE MOBILE (MAIN SCHEDULE) --- */
+@media (max-width: 768px) {
+  .schedule-header {
+    flex-direction: column; /* Judul di atas, Filter di bawah */
+  }
+
+  /* Kotak Filter Putih */
+  .filter-controls {
+    flex-direction: column; /* Dropdown menumpuk */
+    width: 100%;
+    align-items: flex-start;
+    border-radius: 20px; /* Kurangi lengkungan */
+    gap: 15px;
+  }
+
+  .select-group {
+    width: 100%; /* Dropdown full width */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .select-group:last-child {
+    border-bottom: none;
+  }
+
+  .arrow-icon {
+    display: none; /* Sembunyikan panah tengah di HP biar rapi */
+  }
+  
+  /* Tombol Sort (Waktu/Harga) */
+  .sort-tabs {
+    width: 100%;
+    overflow-x: auto; /* Bisa digeser kalo layarnya kekecilan */
+    padding-bottom: 10px;
+  }
+  
+  .tab-btn {
+    white-space: nowrap; /* Teks jangan turun baris */
+    font-size: 0.85rem;
+  }
+}

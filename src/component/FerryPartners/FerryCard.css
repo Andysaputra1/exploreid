@@ -148,3 +148,49 @@
     padding-left: 0;
   }
 }
+
+/* --- RESPONSIVE MOBILE (TICKET CARD) --- */
+@media (max-width: 768px) {
+  .ticket-card {
+    flex-direction: column; /* Susun vertikal */
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  /* Bagian Atas (Logo & Nama) */
+  .ticket-main {
+    width: 100%;
+    border-bottom: 1px dashed #eee;
+    padding-bottom: 15px;
+  }
+
+  /* Bagian Tengah (Jam) */
+  .ticket-time {
+    width: 100%;
+    text-align: left; /* Rata kiri */
+    border: none; /* Hilangkan garis pemisah desktop */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Bagian Bawah (Harga & Tombol) */
+  .ticket-action {
+    width: 100%;
+    flex-direction: row; /* Jejerkan Harga & Tombol */
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 0;
+    margin-top: 10px;
+  }
+
+  .price-display {
+    text-align: left;
+  }
+  
+  .btn-select {
+    padding: 8px 20px; /* Perkecil tombol dikit */
+    font-size: 0.9rem;
+  }
+}

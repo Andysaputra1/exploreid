@@ -153,3 +153,19 @@
     gap: 40px;
   }
 }
+
+/* --- RESPONSIVE MOBILE (FOOTER) --- */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column; /* Tumpuk ke bawah */
+    gap: 40px;
+  }
+
+  .footer-brand, .footer-links, .footer-contact {
+    min-width: 100%; /* Lebar full */
+  }
+
+  .footer-brand p {
+    max-width: 100%;
+  }
+}

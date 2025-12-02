@@ -421,3 +421,25 @@
   background: black;
   transform: translateY(-2px);
 }
+
+/* --- RESPONSIVE MOBILE (DESTINATIONS) --- */
+@media (max-width: 768px) {
+  .dest-section {
+    padding: 60px 0; /* Kurangi padding atas-bawah */
+  }
+
+  .dest-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .dest-desc {
+    max-width: 100%; /* Deskripsi full width */
+  }
+
+  .dest-grid {
+    grid-template-columns: 1fr; /* Paksa jadi 1 kolom saja */
+    gap: 25px;
+  }
+}

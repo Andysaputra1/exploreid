@@ -227,3 +227,83 @@
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
 }
+
+/* --- RESPONSIVE MOBILE (HERO) --- */
+@media (max-width: 992px) {
+  .hero-content {
+    flex-direction: column; /* Ubah dari jejer ke tumpuk */
+    justify-content: center;
+    text-align: center;
+    padding-top: 100px; /* Turunkan dikit biar ga ketabrak navbar */
+  }
+
+  .hero-text {
+    max-width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .hero-text h1 {
+    font-size: 2.5rem; /* Perkecil font judul */
+  }
+
+  .hero-stats {
+    justify-content: center; /* Tengahkan statistik */
+  }
+
+  .reservation-card {
+    width: 100%; /* Kartu jadi lebar full */
+    max-width: 400px; /* Tapi jangan kelebaran banget */
+    margin: 0 auto; /* Posisi tengah */
+  }
+}
+
+/* ... CSS Desktop di atas biarkan ... */
+
+/* --- RESPONSIVE MOBILE (HP) --- */
+@media (max-width: 992px) {
+  
+  .hero-section {
+    height: auto; /* Jangan paksa 100vh di HP, biar bisa scroll */
+    min-height: 100vh;
+    padding-bottom: 50px; /* Ruang napas di bawah */
+  }
+
+  .hero-content {
+    flex-direction: column; /* Tumpuk vertikal */
+    justify-content: center; /* Tengah vertikal */
+    text-align: center;      /* Teks rata tengah */
+    
+    /* INI SOLUSINYA: Tambah jarak atas biar ga nabrak Navbar */
+    padding-top: 150px; 
+    gap: 40px; /* Jarak antara Teks dan Kartu Putih */
+  }
+
+  .hero-text {
+    max-width: 100%;
+    margin-bottom: 20px;
+    padding: 0 20px; /* Jarak kiri kanan biar ga mepet layar */
+  }
+
+  .hero-text h1 {
+    font-size: 2.2rem; /* Perkecil huruf judul */
+    line-height: 1.2;
+  }
+
+  .hero-text p {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  .hero-stats {
+    justify-content: center; /* Statistik di tengah */
+    gap: 20px;
+  }
+
+  /* Kartu Putih di HP */
+  .reservation-card {
+    width: 90%; /* Jangan 400px fix, tapi 90% layar */
+    max-width: 400px;
+    margin: 0 auto; /* Tengah horizontal */
+    padding: 25px; /* Kurangi padding biar muat */
+  }
+}
