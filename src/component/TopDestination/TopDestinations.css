@@ -270,3 +270,154 @@
   gap: 12px;
   color: var(--primary-orange-hover);
 }
+
+/* ... CSS SEBELUMNYA TETAP SAMA ... */
+
+
+/* --- MODAL JADWAL (POP-UP) --- */
+
+/* 1. Overlay Gelap */
+.dest-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease;
+}
+
+/* 2. Kartu Modal */
+.dest-modal-card {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 24px;
+  padding: 25px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+/* Header */
+.dest-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.dest-modal-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--primary-dark);
+}
+.btn-close-modal {
+  background: #f0f0f0;
+  border: none;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  color: #555;
+  transition: 0.2s;
+}
+.btn-close-modal:hover {
+  background: #ff4d4d; color: white;
+}
+
+/* 3. TABS TOMBOL (PENTING) */
+.dest-modal-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto; /* Agar bisa scroll di HP kalau tombolnya banyak */
+  padding-bottom: 5px;
+}
+
+.tab-pill {
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap; /* Teks jangan turun baris */
+  transition: 0.3s;
+}
+
+.tab-pill:hover {
+  border-color: var(--primary-orange);
+  color: var(--primary-orange);
+}
+
+.tab-pill.active {
+  background: var(--primary-orange);
+  color: white;
+  border-color: var(--primary-orange);
+  box-shadow: 0 4px 10px rgba(242, 159, 5, 0.3);
+}
+
+/* 4. LIST JADWAL */
+.dest-modal-list {
+  max-height: 300px; /* Batasi tinggi, scroll kalau kepanjangan */
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding-right: 5px; /* Ruang untuk scrollbar */
+}
+
+/* Scrollbar cantik */
+.dest-modal-list::-webkit-scrollbar { width: 6px; }
+.dest-modal-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+
+.mini-schedule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  transition: 0.2s;
+}
+.mini-schedule-item:hover {
+  border-color: var(--primary-orange);
+  background: #fffcf8;
+}
+
+.sch-left { display: flex; flex-direction: column; }
+.sch-ferry { font-weight: 700; color: var(--primary-dark); font-size: 1rem; }
+.sch-route { font-size: 0.8rem; color: #888; margin-top: 2px; }
+
+.sch-right { text-align: right; }
+.sch-time { display: block; font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); }
+.sch-price { font-size: 0.9rem; color: var(--primary-orange); font-weight: 600; }
+
+.sch-empty {
+  text-align: center;
+  padding: 30px;
+  color: #999;
+  font-style: italic;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+/* Footer Modal */
+.btn-book-full {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary-dark);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.btn-book-full:hover {
+  background: black;
+  transform: translateY(-2px);
+}
