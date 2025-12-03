@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './Hero.css';
+import img1 from '../../assets/herophotos/image1.png';
+import img2 from '../../assets/herophotos/image2.png';
+import img3 from '../../assets/herophotos/image3.png';
+import img4 from '../../assets/herophotos/image4.png';
+import img5 from '../../assets/herophotos/image5.png';
+import img6 from '../../assets/herophotos/image6.png';
+import img7 from '../../assets/herophotos/image7.png';
+import img8 from '../../assets/herophotos/image8.png';
+import img9 from '../../assets/herophotos/image9.png';
+
+
 
 // Gambar Carousel (tetap sama)
 const heroImages = [
-  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1920", 
-  "https://images.unsplash.com/photo-1559563362-c667ba5f5480?q=80&w=1920", 
-  "https://images.unsplash.com/photo-1516216628859-9bccecab13ca?q=80&w=1920"  
+  img1,img2,img3,img4,img5,img6,img7,img8,img9
 ];
 
 const Hero: React.FC = () => {

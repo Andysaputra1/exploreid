@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import './TopDestinations.css';
 
-// --- DATA DUMMY DESTINASI (KARTU) ---
+// 1. IMPORT DATA JADWAL DARI FILE PUSAT
+// Pastikan path '../data/ferryData' sesuai dengan lokasi file datamu
+import { ferrySchedules } from '../../data/FerryData';
+
+// 2. DATA KARTU DESTINASI (Saya tulis lengkap lagi agar tidak error)
 const destinations = [
   {
     id: 1,
@@ -10,7 +14,6 @@ const destinations = [
     image: "https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=600",
     price: "350.000",
     desc: "Nikmati wisata belanja dan hiburan kelas dunia di Singapura.",
-    // LIST ASAL: Jika mau ke Singapura, bisa dari mana saja?
     origins: ["Batam", "Tanjung Pinang", "Johor Bahru"] 
   },
   {
@@ -20,7 +23,6 @@ const destinations = [
     image: "https://images.unsplash.com/photo-1589308078059-be1415eab4c3?q=80&w=600",
     price: "150.000",
     desc: "Gerbang wisata bahari dengan pantai indah dan kuliner lezat.",
-    // LIST ASAL: Jika mau ke Batam, bisa dari mana saja?
     origins: ["Singapura", "Johor Bahru", "Tanjung Pinang"]
   },
   {
@@ -30,46 +32,23 @@ const destinations = [
     image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=600",
     price: "250.000",
     desc: "Jelajahi budaya Melayu dan wisata sejarah di Malaysia.",
-    // LIST ASAL: Jika mau ke JB, bisa dari mana saja?
     origins: ["Batam", "Singapura", "Tanjung Pinang"]
   },
 ];
 
-// --- DATA DUMMY JADWAL FERRY ---
-const ferrySchedules = [
-  // --- TUJUAN: SINGAPURA ---
-  // Dari Batam -> Ke Singapura
-  { from: "Batam", to: "Singapura", ferry: "Batam Fast", time: "07:00", price: 350000 },
-  { from: "Batam", to: "Singapura", ferry: "Majestic", time: "08:30", price: 350000 },
-  { from: "Batam", to: "Singapura", ferry: "Sindo Ferry", time: "10:00", price: 360000 },
-  // Dari Tj Pinang -> Ke Singapura
-  { from: "Tanjung Pinang", to: "Singapura", ferry: "Sindo Ferry", time: "09:00", price: 450000 },
-  // Dari JB -> Ke Singapura
-  { from: "Johor Bahru", to: "Singapura", ferry: "Citra Ferry", time: "11:00", price: 250000 },
-
-  // --- TUJUAN: BATAM ---
-  // Dari Singapura -> Ke Batam
-  { from: "Singapura", to: "Batam", ferry: "Batam Fast", time: "08:20", price: 350000 },
-  { from: "Singapura", to: "Batam", ferry: "Horizon", time: "18:00", price: 340000 },
-  
-  // --- TUJUAN: JOHOR BAHRU ---
-  // Dari Batam -> Ke JB
-  { from: "Batam", to: "Johor Bahru", ferry: "Citra Ferry", time: "09:00", price: 250000 },
-];
-
 const TopDestinations: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedCity, setSelectedCity] = useState<any>(null); // Kota Tujuan (Kartu yg diklik)
-  const [selectedOrigin, setSelectedOrigin] = useState("");    // Kota Asal (Tab yg dipilih)
+  const [selectedCity, setSelectedCity] = useState<any>(null); // Kota Tujuan
+  const [selectedOrigin, setSelectedOrigin] = useState("");    // Kota Asal
 
-  // Buka Modal
+  // Fungsi Buka Modal
   const handleOpenModal = (city: any) => {
     setSelectedCity(city);
-    setSelectedOrigin(city.origins[0]); // Default pilih tab asal pertama
+    setSelectedOrigin(city.origins[0]); // Default pilih tab pertama
     setShowModal(true);
   };
 
-  // Filter Logic: Cari ferry yang TUJUANNYA = Kota yg diklik, dan DARI = Tab yg aktif
+  // Logic Filter: Ambil data dari 'ferrySchedules' pusat
   const filteredSchedules = ferrySchedules.filter(
     item => item.to === selectedCity?.name && item.from === selectedOrigin
   );
@@ -125,12 +104,11 @@ const TopDestinations: React.FC = () => {
             
             {/* Header Modal */}
             <div className="dest-modal-header">
-              {/* UBAH TEXT JADI 'KE' */}
               <h3>Jadwal ke {selectedCity.name}</h3>
               <button className="btn-close-modal" onClick={() => setShowModal(false)}>✕</button>
             </div>
 
-            {/* TAB TOMBOL (ASAL/ORIGIN) */}
+            {/* TAB TOMBOL (ASAL) */}
             <div className="dest-modal-tabs">
               {selectedCity.origins.map((origin: string) => (
                 <button 
@@ -138,7 +116,6 @@ const TopDestinations: React.FC = () => {
                   className={`tab-pill ${selectedOrigin === origin ? 'active' : ''}`}
                   onClick={() => setSelectedOrigin(origin)}
                 >
-                  {/* UBAH LABEL JADI 'DARI' */}
                   Dari {origin}
                 </button>
               ))}
@@ -147,16 +124,18 @@ const TopDestinations: React.FC = () => {
             {/* LIST JADWAL */}
             <div className="dest-modal-list">
               {filteredSchedules.length > 0 ? (
-                filteredSchedules.map((sch, idx) => (
-                  <div key={idx} className="mini-schedule-item">
+                filteredSchedules.map((sch) => (
+                  <div key={sch.id} className="mini-schedule-item">
                     <div className="sch-left">
                       <span className="sch-ferry">{sch.ferry}</span>
-                      {/* TAMPILKAN RUTE YANG BENAR */}
                       <span className="sch-route">{sch.from} ➝ {sch.to}</span>
                     </div>
                     <div className="sch-right">
                       <span className="sch-time">{sch.time} WIB</span>
-                      <span className="sch-price">IDR {sch.price.toLocaleString()}</span>
+                      {/* PERBAIKAN DI SINI: Akses prices.adult.oneWay */}
+                      <span className="sch-price">
+                        IDR {sch.prices.adult.oneWay.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 ))
@@ -168,7 +147,12 @@ const TopDestinations: React.FC = () => {
             </div>
             
             <div className="dest-modal-footer">
-              <button className="btn-book-full">Pesan Sekarang via WA</button>
+              <button 
+                className="btn-book-full"
+                onClick={() => window.open(`https://wa.me/6285265182020?text=Halo%20Admin,%20saya%20mau%20pesan%20tiket%20ke%20${selectedCity.name}`, '_blank')}
+              >
+                Pesan Sekarang via WA
+              </button>
             </div>
 
           </div>

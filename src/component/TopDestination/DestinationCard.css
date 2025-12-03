@@ -1,67 +1,209 @@
-/* src/component/DestinationCard.css */
+/* Padding Section */
+.dest-section {
+  padding: 100px 0;
+  background-color: #ffffff;
+}
 
+/* --- HEADER SECTION --- */
+.dest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.sub-title {
+  color: #F29F05; /* Warna Oranye */
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  color: #222;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dest-desc {
+  max-width: 450px;
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* --- GRID LAYOUT --- */
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+/* --- KARTU DESTINASI (Updated Style) --- */
 .dest-card {
-  position: relative;
-  height: 400px; /* Tinggi kartu, bisa disesuaikan */
-  border-radius: 16px;
-  overflow: hidden; /* Penting agar gambar tidak keluar dari radius */
-  color: white;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
   
-  /* Atur gambar latar belakang */
-  background-size: cover;
-  background-position: center;
-  
-  /* Efek 'zoom' halus saat hover */
-  transition: transform 0.3s ease;
+  /* Flex Column agar tinggi kartu rata */
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
 }
 
 .dest-card:hover {
-  transform: scale(1.03); /* Sedikit membesar saat di-hover */
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
-/* Gradien gelap dari bawah ke atas agar teks terbaca jelas */
-.dest-card-overlay {
+/* Bagian Gambar (Atas) */
+.card-image-wrapper {
+  position: relative;
+  height: 220px;
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.dest-card:hover .card-image-wrapper img {
+  transform: scale(1.1);
+}
+
+/* Badge Harga */
+.price-tag {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60%;
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  bottom: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
-/* Styling harga "mulai dari..." */
-.dest-card-price {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background-color: rgba(0, 0, 0, 0.4); /* Latar belakang semi-transparan */
-  backdrop-filter: blur(5px); /* Efek 'glass' */
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
+.price-tag .label { font-size: 0.7rem; color: #888; font-weight: 600; }
+.price-tag .amount { font-size: 1rem; color: #F29F05; font-weight: 700; }
+
+/* Bagian Konten Teks (Bawah) */
+.card-content {
+  padding: 24px;
+  padding-bottom: 32px;
+  flex-grow: 1; /* Isi ruang kosong */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Konten teks di bagian bawah */
-.dest-card-content {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
-  right: 1.5rem;
+.location-info {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.85rem; color: #888; margin-bottom: 8px;
 }
 
-.dest-card-content h3 {
-  font-family: var(--font-head);
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  margin-bottom: 0.25rem;
+.card-content h3 {
+  font-size: 1.4rem; font-weight: 700; color: #222; margin-bottom: 10px;
 }
 
-.dest-card-content p {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  margin: 0;
-  opacity: 0.9;
+.card-content p {
+  font-size: 0.95rem; color: #666; line-height: 1.5;
+  margin-bottom: 24px;
+  
+  /* Batasi teks max 3 baris */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
+/* Tombol Detail */
+.btn-detail {
+  margin-top: auto; /* Dorong ke paling bawah */
+  display: flex; align-items: center; gap: 8px;
+  background: transparent; border: none;
+  color: #F29F05; font-weight: 600; font-size: 0.95rem;
+  padding: 0; cursor: pointer; transition: gap 0.3s ease;
+}
+
+.btn-detail:hover {
+  gap: 12px; color: #d48800;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+  .dest-section { padding: 60px 0; }
+  .dest-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .dest-grid { grid-template-columns: 1fr; } /* 1 Kolom di HP */
+  
+  /* Modal responsive */
+  .dest-modal-card { width: 95%; max-height: 90vh; overflow-y: auto; }
+}
+
+/* --- STYLING MODAL JADWAL (POP-UP) --- */
+.dest-modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+  z-index: 2000; display: flex; justify-content: center; align-items: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.dest-modal-card {
+  background: white; width: 90%; max-width: 500px;
+  border-radius: 24px; padding: 25px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  position: relative; animation: slideUp 0.3s ease;
+}
+
+.dest-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.dest-modal-header h3 { font-size: 1.4rem; color: #222; }
+.btn-close-modal {
+  background: #f0f0f0; border: none; width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; font-weight: bold; color: #555;
+}
+
+.dest-modal-tabs {
+  display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;
+}
+.tab-pill {
+  padding: 8px 16px; border-radius: 50px; border: 1px solid #ddd;
+  background: white; color: #666; cursor: pointer; white-space: nowrap;
+}
+.tab-pill.active {
+  background: #F29F05; color: white; border-color: #F29F05;
+}
+
+.dest-modal-list {
+  max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 5px;
+}
+.mini-schedule-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 15px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px;
+}
+.sch-ferry { font-weight: 700; color: #222; display: block; }
+.sch-route { font-size: 0.8rem; color: #888; }
+.sch-time { font-weight: 700; font-size: 1.1rem; color: #222; display: block; }
+.sch-price { font-size: 0.9rem; color: #F29F05; font-weight: 600; }
+.sch-empty { text-align: center; padding: 20px; color: #999; font-style: italic; }
+
+.btn-book-full {
+  width: 100%; padding: 14px; background: #222; color: white; border: none;
+  border-radius: 12px; font-weight: 600; cursor: pointer;
+}
+
+/* Animasi */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

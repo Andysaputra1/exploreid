@@ -2,49 +2,48 @@ import React, { useState } from 'react';
 import FerryCard from './FerryCard';
 import './FerryPartners.css';
 
-// Data Dummy Jadwal
-const ferryData = [
-  { id: 1, name: "Batam Fast", origin: "Batam", destination: "Singapura", time: "08:20", price: 350000, image: "https://cdn-icons-png.flaticon.com/512/56/56903.png" },
-  { id: 2, name: "Majestic Ferry", origin: "Batam", destination: "Singapura", time: "09:50", price: 340000, image: "https://cdn-icons-png.flaticon.com/512/870/870092.png" },
-  { id: 3, name: "Sindo Ferry", origin: "Batam", destination: "Singapura", time: "07:00", price: 360000, image: "https://cdn-icons-png.flaticon.com/512/2942/2942544.png" },
-  { id: 4, name: "Horizon Ferry", origin: "Singapura", destination: "Batam", time: "18:00", price: 400000, image: "https://cdn-icons-png.flaticon.com/512/56/56903.png" },
-  { id: 5, name: "Citra Ferry", origin: "Batam", destination: "Johor Bahru", time: "10:30", price: 250000, image: "https://cdn-icons-png.flaticon.com/512/870/870092.png" },
-];
+// Import data pusat
+import { ferrySchedules } from '../../data/FerryData';
 
 const FerryPartners: React.FC = () => {
   const [filterOrigin, setFilterOrigin] = useState("Batam");
   const [filterDest, setFilterDest] = useState("Singapura");
-  const [sortBy, setSortBy] = useState("time"); // 'time' atau 'price'
+  const [sortBy, setSortBy] = useState("time"); 
 
-  // Logic Filtering & Sorting
-  const filteredData = ferryData
-    .filter(item => item.origin === filterOrigin && item.destination === filterDest)
+  const filteredData = ferrySchedules
     .sort((a, b) => {
-      if (sortBy === 'price') return a.price - b.price;
-      return a.time.localeCompare(b.time);
-    });
+          if (sortBy === 'price') {
+            // Bandingkan harga termurah (Adult One Way)
+            return a.prices.adult.oneWay - b.prices.adult.oneWay;
+          }
+          return a.time.localeCompare(b.time);
+        });
 
   return (
     <section id="schedule" className="schedule-section">
       <div className="container">
         
-        {/* Header & Controls */}
+        {/* HEADER SECTION (JUDUL & FILTER) */}
         <div className="schedule-header">
+          
+          {/* BAGIAN 1: JUDUL & DESKRIPSI (INI YANG HILANG KEMARIN) */}
           <div>
             <h2 className="section-title">Jadwal Kapal & Harga</h2>
             <p className="section-desc">Pilih rute perjalanan Anda dan temukan penawaran terbaik.</p>
           </div>
 
-          {/* Filter Box */}
+          {/* BAGIAN 2: KOTAK FILTER */}
           <div className="filter-controls">
             <div className="select-group">
               <label>Dari</label>
               <select value={filterOrigin} onChange={(e) => setFilterOrigin(e.target.value)}>
                 <option value="Batam">Batam</option>
                 <option value="Singapura">Singapura</option>
+                <option value="Johor Bahru">Johor Bahru</option>
+                <option value="Tanjung Pinang">Tanjung Pinang</option>
               </select>
             </div>
-
+            
             <div className="arrow-icon">➝</div>
 
             <div className="select-group">
@@ -53,12 +52,13 @@ const FerryPartners: React.FC = () => {
                 <option value="Singapura">Singapura</option>
                 <option value="Batam">Batam</option>
                 <option value="Johor Bahru">Johor Bahru</option>
+                <option value="Tanjung Pinang">Tanjung Pinang</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Tab Sorting */}
+        {/* TAB SORTING */}
         <div className="sort-tabs">
           <button 
             className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`}
@@ -74,18 +74,18 @@ const FerryPartners: React.FC = () => {
           </button>
         </div>
 
-        {/* List Result */}
+        {/* LIST RESULT */}
         <div className="schedule-list">
           {filteredData.length > 0 ? (
             filteredData.map(item => (
               <FerryCard 
                 key={item.id}
-                name={item.name}
-                image={item.image}
-                origin={item.origin}
-                destination={item.destination}
+                name={item.ferry}
+                image={item.logo}
+                origin={item.from}
+                destination={item.to}
                 time={item.time}
-                price={item.price}
+                prices={item.prices} // <--- Kirim object prices utuh
               />
             ))
           ) : (

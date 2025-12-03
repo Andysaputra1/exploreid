@@ -1,33 +1,41 @@
-.ticket-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Wrapper Utama */
+.ticket-card-wrapper {
   background-color: white;
   border: 1px solid #eee;
   border-radius: 16px;
-  padding: 24px;
   margin-bottom: 20px;
+  overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
-.ticket-card:hover {
-  border-color: var(--primary-orange);
+.ticket-card-wrapper:hover {
+  border-color: #F29F05;
   box-shadow: 0 8px 25px rgba(242, 159, 5, 0.15);
-  transform: translateY(-2px);
 }
 
-/* KIRI */
+/* --- BAGIAN KARTU UTAMA (HEADER) --- */
+.ticket-card {
+  padding: 24px;
+  display: flex; /* Flexbox agar berjejer ke samping */
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 1. Logo & Nama Kapal (Kiri) */
 .ticket-main {
   display: flex;
   align-items: center;
-  gap: 20px;
-  flex: 2;
+  gap: 15px;
+  flex: 2; /* Mengambil ruang lebih banyak */
 }
 
+/* INI YANG MEMBATASI UKURAN GAMBAR AGAR TIDAK RAKSASA */
 .carrier-logo {
   width: 60px;
   height: 60px;
+  min-width: 60px; /* Supaya tidak gepeng */
   background: #f8f9fa;
   border-radius: 12px;
   padding: 10px;
@@ -38,27 +46,28 @@
 
 .carrier-logo img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: contain; /* Gambar pas di dalam kotak */
 }
 
 .carrier-info h4 {
+  margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--primary-dark);
-  margin-bottom: 4px;
+  color: #222;
 }
 
 .route-badge {
   font-size: 0.8rem;
-  background: #f0f2f5;
   color: #666;
+  background: #f0f2f5;
   padding: 4px 10px;
-  border-radius: 50px;
-  font-weight: 500;
+  border-radius: 20px;
+  margin-top: 4px;
+  display: inline-block;
 }
 
-/* TENGAH */
+/* 2. Waktu (Tengah) */
 .ticket-time {
   flex: 1;
   text-align: center;
@@ -68,9 +77,9 @@
 
 .departure-time {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  color: var(--primary-dark);
+  color: #222;
 }
 
 .time-label {
@@ -78,119 +87,126 @@
   color: #888;
 }
 
-/* KANAN */
+/* 3. Harga & Tombol (Kanan) */
 .ticket-action {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 10px;
-  padding-left: 20px;
+  gap: 8px;
 }
 
 .price-display {
   text-align: right;
 }
 
+.label-start {
+  display: block;
+  font-size: 0.7rem;
+  color: #999;
+}
+
 .currency {
   font-size: 0.8rem;
-  color: #888;
+  font-weight: 600;
   margin-right: 4px;
+  color: #222;
 }
 
 .amount {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: var(--primary-orange);
+  color: #F29F05;
 }
 
-.pax {
-  font-size: 0.8rem;
-  color: #888;
-}
-
+/* Tombol Pilih */
 .btn-select {
-  background-color: var(--primary-orange);
+  background-color: #F29F05;
   color: white;
   border: none;
-  padding: 10px 25px;
+  padding: 8px 24px;
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
   transition: 0.3s;
 }
 
 .btn-select:hover {
-  background-color: var(--primary-orange-hover);
+  background-color: #d48800;
 }
 
-/* Responsive Mobile */
-@media (max-width: 768px) {
-  .ticket-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  }
-  
-  .ticket-time {
-    border: none;
-    text-align: left;
-    width: 100%;
-    padding-bottom: 15px;
-    border-bottom: 1px dashed #ddd;
-  }
-  
-  .ticket-action {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 0;
-  }
+/* --- BAGIAN DETAIL (TABEL HARGA) --- */
+.ticket-details {
+  background-color: #fafafa;
+  border-top: 1px dashed #ddd;
+  padding: 20px;
+  animation: slideDown 0.3s ease;
 }
 
-/* --- RESPONSIVE MOBILE (TICKET CARD) --- */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.price-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+
+.p-header {
+  font-weight: 700;
+  color: #888;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.p-col { font-size: 0.95rem; color: #333; }
+
+.vip-row {
+  background-color: #fff8e1;
+  padding-left: 10px; padding-right: 10px;
+  border-radius: 8px; border: 1px solid #ffe082;
+  margin-top: 5px;
+}
+
+.btn-book-small {
+  padding: 6px 15px;
+  border-radius: 6px;
+  border: 1px solid #F29F05;
+  background: white;
+  color: #F29F05;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-book-small:hover { background: #F29F05; color: white; }
+
+.btn-book-small.vip { background: #222; border-color: #222; color: #FFD700; }
+.btn-book-small.vip:hover { background: black; }
+
+.detail-footer {
+  margin-top: 15px; font-size: 0.8rem; color: #999; font-style: italic;
+}
+
+/* RESPONSIVE HP */
 @media (max-width: 768px) {
-  .ticket-card {
-    flex-direction: column; /* Susun vertikal */
-    align-items: flex-start;
-    gap: 20px;
-    padding: 20px;
-  }
-
-  /* Bagian Atas (Logo & Nama) */
-  .ticket-main {
-    width: 100%;
-    border-bottom: 1px dashed #eee;
-    padding-bottom: 15px;
-  }
-
-  /* Bagian Tengah (Jam) */
-  .ticket-time {
-    width: 100%;
-    text-align: left; /* Rata kiri */
-    border: none; /* Hilangkan garis pemisah desktop */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Bagian Bawah (Harga & Tombol) */
-  .ticket-action {
-    width: 100%;
-    flex-direction: row; /* Jejerkan Harga & Tombol */
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 0;
-    margin-top: 10px;
-  }
-
-  .price-display {
-    text-align: left;
-  }
+  .ticket-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .ticket-main { width: 100%; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+  .ticket-time { width: 100%; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+  .ticket-action { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed #eee; }
   
-  .btn-select {
-    padding: 8px 20px; /* Perkecil tombol dikit */
-    font-size: 0.9rem;
-  }
+  .p-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .p-header { display: none; }
+  .p-col::before { content: attr(data-label); display: block; font-size: 0.75rem; color: #999; }
+  .action { grid-column: span 2; text-align: right; }
 }
