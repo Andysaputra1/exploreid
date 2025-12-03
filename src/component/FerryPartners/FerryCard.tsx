@@ -1,137 +1,180 @@
 import React, { useState } from 'react';
 import './FerryCard.css';
-import { TicketClasses } from '../../data/FerryData'; 
+import { TicketClasses, PriceDetail } from '../../data/FerryData'; // Sesuaikan path
 
+// --- 1. DEFINISI TIPE PROPS ---
 interface FerryProps {
-  name: string; 
-  image: string; 
-  origin: string; 
+  name: string;
+  image: string;
+  origin: string;
   destination: string;
-  time: string; 
-  prices: TicketClasses; 
-  note?: string; 
-  fromPort: string; 
+  time: string;
+  prices: TicketClasses;
+  note?: string;
+  fromPort: string;
   toPort: string;
 }
 
-const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, time, prices, note, fromPort, toPort }) => {
+// Props untuk komponen baris harga (dibuat terpisah agar rapi)
+interface PriceRowProps {
+  label: string;
+  priceDetail: PriceDetail;
+  variant?: 'standard' | 'wni' | 'vip';
+  onBook?: () => void;
+}
+
+// --- 2. SUB-COMPONENT: PRICE ROW ---
+// Dipisah agar renderPriceTable bersih
+const PriceRow: React.FC<PriceRowProps> = ({ label, priceDetail, variant = 'standard' }) => {
+  // Helper class untuk styling berdasarkan variant
+  const getRowClass = () => {
+    if (variant === 'vip') return 'vip-class-row';
+    if (variant === 'wni') return 'id-promo-row';
+    return '';
+  };
+
+  const getLabelIcon = () => {
+    if (variant === 'vip') return '👑 ';
+    if (variant === 'wni') return '✨ ';
+    return '';
+  };
+
+  const getButtonClass = () => {
+    if (variant === 'vip') return 'vip';
+    if (variant === 'wni') return 'wni-promo-btn';
+    return '';
+  };
+
+  return (
+    <div className={`p-row ${getRowClass()}`}>
+      <div className="p-col" data-label="Kategori">
+        <strong className={variant === 'wni' ? 'text-id-promo' : ''}>
+          {getLabelIcon()}{label}
+        </strong>
+      </div>
+      <div className="p-col" data-label="One Way">
+        Rp {priceDetail.oneWay.toLocaleString('id-ID')}
+      </div>
+      <div className="p-col" data-label="Two Way (PP)">
+        Rp {priceDetail.twoWay.toLocaleString('id-ID')}
+      </div>
+      <div className="p-col action">
+        <button className={`btn-book-small ${getButtonClass()}`}>
+          Pesan {variant === 'vip' ? 'VIP' : variant === 'wni' ? 'WNI' : ''}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+
+// --- 3. MAIN COMPONENT ---
+const FerryCard: React.FC<FerryProps> = ({ 
+  name, image, origin, destination, time, prices, note, fromPort, toPort 
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Helper: Format Waktu
   const getTimeDisclaimer = (timeStr: string) => {
     if (timeStr.includes('SGT')) return 'Singapore Time';
     if (timeStr.includes('MYT')) return 'Malaysia Time';
     return 'WIB (Indonesia Time)';
   };
 
-  // --- FUNGSI RENDER LOGIC BARU ---
+  // --- LOGIKA RENDER YANG DIPERBAIKI ---
   const renderPriceTable = () => {
-    
-    // Cek ketersediaan harga khusus (WNI/VIP)
-    const hasWniPrice = prices.vipAdult !== undefined || prices.wniAdult !== undefined;
-    
-    // Cek apakah harga Foreigner Dewasa == Anak
-    const isForeignSame = prices.adult.oneWay === prices.child.oneWay;
-    
-    // --- Template Baris Harga (Helper) ---
-    const PriceRow = ({ label, owPrice, twPrice, isWni = false }: any) => (
-      <div className={`p-row ${isWni ? 'id-promo-row' : ''}`}>
-        <div className="p-col" data-label="Kategori">
-          <strong className={isWni ? 'text-id-promo' : ''}>
-            {isWni ? '✨ ' : ''}{label}
-          </strong>
-        </div>
-        <div className="p-col" data-label="One Way">Rp {owPrice.toLocaleString()}</div>
-        <div className="p-col" data-label="Two Way (PP)">Rp {twPrice.toLocaleString()}</div>
-        <div className="p-col action">
-          <button className={`btn-book-small ${isWni ? 'wni-promo-btn' : ''}`}>
-            Pesan {isWni ? 'WNI' : ''}
-          </button>
-        </div>
-      </div>
-    );
+    // Helper: Cek apakah harga Dewasa & Anak sama
+    const isPriceSame = (adult: PriceDetail, child?: PriceDetail) => {
+      if (!child) return true;
+      return adult.oneWay === child.oneWay && adult.twoWay === child.twoWay;
+    };
 
-    // =========================================================
-    // SKENARIO 1: TIDAK ADA HARGA KHUSUS (WNI/VIP)
-    // (Misal: Marine Hawk, Dolphin)
-    // =========================================================
-    if (!hasWniPrice) {
-        
-        // KASUS 1a: Harga Dewasa == Anak (Tampilkan 1 Baris Saja)
-        if (isForeignSame) {
-            return (
-                <PriceRow 
-                    label="Tiket Reguler" 
-                    owPrice={prices.adult.oneWay} 
-                    twPrice={prices.adult.twoWay} 
-                />
-            );
-        }
-
-        // KASUS 1b: Harga Dewasa != Anak (Tampilkan 2 Baris)
-        return (
-            <>
-                <PriceRow label="Tiket Dewasa" owPrice={prices.adult.oneWay} twPrice={prices.adult.twoWay} />
-                <PriceRow label="Tiket Anak-anak" owPrice={prices.child.oneWay} twPrice={prices.child.twoWay} />
-            </>
-        );
-    }
-
-    // =========================================================
-    // SKENARIO 2: ADA PEMBEDAAN HARGA (FOREIGNER vs WNI)
-    // (Misal: Horizon, Majestic, Putri Anggreni)
-    // =========================================================
-    
-    // Tentukan harga WNI dari field yang tersedia (wniAdult atau vipAdult)
-    const wniAdultPrice = prices.wniAdult || prices.vipAdult;
-    const wniChildPrice = prices.wniChild || prices.vipChild;
+    // Deteksi ketersediaan tipe harga
+    const hasWni = !!prices.wniAdult;
+    const hasVip = !!prices.vipAdult;
+    const hasGroup = !!prices.groupPax;
 
     return (
-        <>
-            {/* SECTION 1: TIKET FOREIGNER */}
-            <h4 className="table-subtitle">Paspor Asing (Foreigner)</h4>
-            
-            {/* Cek lagi: Jika Foreigner Dewasa == Anak, gabung jadi 1 baris */}
-            {isForeignSame ? (
-                 <PriceRow label="Tiket Reguler (Foreigner)" owPrice={prices.adult.oneWay} twPrice={prices.adult.twoWay} />
-            ) : (
-                <>
-                    <PriceRow label="Dewasa (Foreigner)" owPrice={prices.adult.oneWay} twPrice={prices.adult.twoWay} />
-                    <PriceRow label="Anak (Foreigner)" owPrice={prices.child.oneWay} twPrice={prices.child.twoWay} />
-                </>
-            )}
-
-
-            {/* SECTION 2: TIKET WNI */}
-            <h4 className="table-subtitle promo-subtitle">Paspor Indonesia (WNI)</h4>
-            
+      <>
+        {/* === SECTION 1: HARGA STANDAR / FOREIGNER === */}
+        {/* Jika ada VIP, anggap ini "Regular". Jika ada WNI, anggap ini "Foreigner". */}
+        <h4 className="table-subtitle">
+          {hasVip ? "Kelas Reguler" : (hasWni ? "Paspor Asing (Foreigner)" : "Tiket Reguler")}
+        </h4>
+        
+        {isPriceSame(prices.adult, prices.child) ? (
             <PriceRow 
-                label="Dewasa (WNI)" 
-                owPrice={wniAdultPrice!.oneWay} 
-                twPrice={wniAdultPrice!.twoWay!} 
-                isWni={true}
+              label={hasWni ? "Tiket All Passport" : "Tiket Penumpang"} 
+              priceDetail={prices.adult} 
             />
-            
-            {/* Tampilkan Anak WNI jika datanya ada */}
-            {wniChildPrice ? (
-                <PriceRow 
-                    label="Anak (WNI)" 
-                    owPrice={wniChildPrice.oneWay} 
-                    twPrice={wniChildPrice.twoWay!} 
-                    isWni={true}
-                />
+        ) : (
+            <>
+              <PriceRow label="Dewasa" priceDetail={prices.adult} />
+              <PriceRow label="Anak-anak" priceDetail={prices.child} />
+            </>
+        )}
+
+        {/* === SECTION 2: HARGA KHUSUS WNI (Jika Ada) === */}
+        {hasWni && prices.wniAdult && (
+          <>
+            <h4 className="table-subtitle promo-subtitle">Paspor Indonesia (WNI)</h4>
+            {isPriceSame(prices.wniAdult, prices.wniChild) ? (
+               <PriceRow 
+                 label="Tiket Khusus WNI" 
+                 priceDetail={prices.wniAdult} 
+                 variant="wni" 
+               />
             ) : (
-                // Jika tidak ada data khusus anak WNI, asumsikan sama dengan Dewasa WNI (opsional)
-                 null
+               <>
+                 <PriceRow label="Dewasa (WNI)" priceDetail={prices.wniAdult} variant="wni" />
+                 {prices.wniChild && (
+                   <PriceRow label="Anak (WNI)" priceDetail={prices.wniChild} variant="wni" />
+                 )}
+               </>
             )}
-        </>
+          </>
+        )}
+
+        {/* === SECTION 3: HARGA VIP (Jika Ada) === */}
+        {hasVip && prices.vipAdult && (
+          <>
+             <h4 className="table-subtitle vip-subtitle">Kelas VIP (Cabin)</h4>
+             {isPriceSame(prices.vipAdult, prices.vipChild) ? (
+                <PriceRow 
+                  label="Tiket VIP" 
+                  priceDetail={prices.vipAdult} 
+                  variant="vip" 
+                />
+             ) : (
+                <>
+                  <PriceRow label="VIP Dewasa" priceDetail={prices.vipAdult} variant="vip" />
+                  {prices.vipChild && (
+                    <PriceRow label="VIP Anak" priceDetail={prices.vipChild} variant="vip" />
+                  )}
+                </>
+             )}
+          </>
+        )}
+
+        {/* === SECTION 4: GROUP PAX (Jika Ada - untuk BatamFast/Majestic) === */}
+        {hasGroup && prices.groupPax && (
+           <>
+            <h4 className="table-subtitle">Paket Group</h4>
+            <div className="p-row">
+                <div className="p-col"><strong>Group (Min 4 Pax)</strong></div>
+                <div className="p-col">-</div>
+                <div className="p-col">Rp {prices.groupPax.twoWay.toLocaleString('id-ID')}</div>
+                <div className="p-col action"><button className="btn-book-small">Pesan Group</button></div>
+            </div>
+           </>
+        )}
+      </>
     );
   };
 
-
   return (
     <div className={`ticket-card-wrapper ${isOpen ? 'open' : ''}`}>
-      
-      {/* HEADER KARTU */}
+      {/* HEADER KARTU - (Bagian ini tidak banyak berubah, hanya cleanup sedikit) */}
       <div className="ticket-card">
         <div className="ticket-main">
           <div className="carrier-logo">
@@ -159,7 +202,7 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
             <span className="label-start">Mulai dari</span>
             <span className="currency">IDR</span>
             <span className="amount">
-                {prices.child ? prices.child.oneWay.toLocaleString('id-ID') : prices.adult.oneWay.toLocaleString('id-ID')}
+              {(prices.wniAdult?.oneWay || prices.child.oneWay || prices.adult.oneWay).toLocaleString('id-ID')}
             </span>
           </div>
           
@@ -191,7 +234,6 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
           </div>
         </div>
       )}
-
     </div>
   );
 };

@@ -75,9 +75,9 @@ const NOTE_BATAMFAST = "*Harga Regular: Foreigner. WNI: IDN Passport. Group: Min
 
 // 3. MAJESTIC
 const PRICES_MAJESTIC: TicketClasses = {
-  adult: { oneWay: 480000, twoWay: 900000 },
-  child: { oneWay: 340000, twoWay: 650000 },
-  wniAdult: { oneWay: 385000, twoWay: 725000 },
+  adult: { oneWay: 385000, twoWay: 725000 },
+  child: { oneWay: 385000, twoWay: 725000 },
+  wniAdult: { oneWay: 480000, twoWay: 900000 },
   groupPax: { oneWay: 0, twoWay: 690000 }
 };
 const NOTE_MAJESTIC = "*Harga Regular: Foreigner. WNI: IDN Passport. Group: Min 4 Pax.";
