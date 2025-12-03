@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState } from 'react';
 import FerryCard from './FerryCard';
 import './FerryPartners.css';
 import { ferrySchedules } from '../../data/FerryData';
+import { PORTS } from '../../data/ports'; // Import data pelabuhan baru
 
 const FerryPartners: React.FC = () => {
-  const [filterOrigin, setFilterOrigin] = useState("Batam");
-  const [filterDest, setFilterDest] = useState("Singapura");
+  // Default State (Sekarang menggunakan nama PELABUHAN, bukan Kota)
+  const [filterOrigin, setFilterOrigin] = useState("Batam Centre");
+  const [filterDest, setFilterDest] = useState("HarbourFront"); // Sesuaikan dengan value di PORTS
   const [sortBy, setSortBy] = useState("time"); 
   
-  // State Filter Operator
   const [selectedOperator, setSelectedOperator] = useState('All'); 
 
   const handleSwapPorts = () => {
@@ -16,33 +17,22 @@ const FerryPartners: React.FC = () => {
     setFilterDest(filterOrigin);
   };
 
-  // --- LOGIC BARU: MENDAPATKAN OPERATOR YANG RELEVAN SAJA ---
-  const uniqueOperators = useMemo(() => {
-    // 1. Filter jadwal hanya untuk rute yang sedang dipilih
-    const relevantSchedules = ferrySchedules.filter(
-      item => item.from === filterOrigin && item.to === filterDest
-    );
-    
-    // 2. Ambil daftar nama operator yang unik dari jadwal yang relevan
-    const operators = relevantSchedules.map(sch => sch.ferry);
-    
-    // 3. Kembalikan array unik, selalu sertakan 'All'
-    return ['All', ...new Set(operators)];
-  }, [filterOrigin, filterDest]); // Dependencies: Berubah saat rute (dari/ke) berubah
-  // -----------------------------------------------------------
-
-  // EFFECT BARU: Pastikan filter operator reset ke 'All' jika operator yang dipilih 
-  // tidak ada di rute yang baru (misal: pindah rute, operator lama hilang)
-  useEffect(() => {
-    if (!uniqueOperators.includes(selectedOperator)) {
-      setSelectedOperator('All');
-    }
-  }, [uniqueOperators, selectedOperator]);
-
-
-  // LOGIC FILTERING & SORTING 
+  // LOGIC FILTERING (Sekarang cek fromPort dan toPort)
   const filteredData = ferrySchedules
-    .filter(item => item.from === filterOrigin && item.to === filterDest)
+    .filter(item => {
+        // Cek Asal: Apakah user pilih pelabuhan spesifik ATAU kota umum?
+        const originMatch = 
+            item.fromPort === filterOrigin || // Cocok pelabuhan spesifik
+            item.from === filterOrigin;       // Cocok kota umum (misal: "Batam")
+
+        // Cek Tujuan: Sama seperti di atas
+        const destMatch = 
+            item.toPort === filterDest || 
+            item.to === filterDest ||
+            (filterDest === "HarbourFront" && item.toPort.includes("HarbourFront")); // Handle variasi nama
+        
+        return originMatch && destMatch;
+    })
     .filter(item => selectedOperator === 'All' || item.ferry === selectedOperator)
     .sort((a, b) => {
       if (sortBy === 'price') {
@@ -51,27 +41,42 @@ const FerryPartners: React.FC = () => {
       return a.time.localeCompare(b.time);
     });
 
+  // Logic Unique Operators (Sama seperti sebelumnya)
+  const uniqueOperators = ['All', ...new Set(filteredData.map(item => item.ferry))];
+
+
   return (
     <section id="schedule" className="schedule-section">
       <div className="container">
         
-        {/* HEADER SECTION (JUDUL & FILTER RUTE) */}
         <div className="schedule-header">
           <div>
             <h2 className="section-title">Jadwal Kapal & Harga</h2>
-            <p className="section-desc">Pilih rute perjalanan Anda dan temukan penawaran terbaik.</p>
+            <p className="section-desc">Cari jadwal berdasarkan pelabuhan asal dan tujuan.</p>
           </div>
 
-          {/* FILTER KONTROL RUTE (Dropdowns) */}
+          {/* FILTER CONTROLS (GROUPED DROPDOWN) */}
           <div className="filter-controls">
             
+            {/* DROPDOWN DARI (PELABUHAN) */}
             <div className="select-group">
-              <label>Dari</label>
+              <label>Dari Pelabuhan</label>
               <select value={filterOrigin} onChange={(e) => setFilterOrigin(e.target.value)}>
-                <option value="Batam">Batam</option>
-                <option value="Singapura">Singapura</option>
-                <option value="Johor Bahru">Johor Bahru</option>
-                <option value="Tanjung Pinang">Tanjung Pinang</option>
+                
+                <optgroup label="BATAM">
+                    {PORTS.BATAM.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
+                <optgroup label="SINGAPURA">
+                    {PORTS.SINGAPURA.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
+                <optgroup label="JOHOR (MALAYSIA)">
+                    {PORTS.JOHOR.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
+                <optgroup label="KEPRI LAINNYA">
+                    {PORTS.TANJUNG_PINANG.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                    {PORTS.KARIMUN.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
+
               </select>
             </div>
             
@@ -82,53 +87,46 @@ const FerryPartners: React.FC = () => {
               </svg>
             </button>
 
+            {/* DROPDOWN KE (PELABUHAN) */}
             <div className="select-group">
-              <label>Ke</label>
+              <label>Ke Pelabuhan</label>
               <select value={filterDest} onChange={(e) => setFilterDest(e.target.value)}>
-                <option value="Singapura">Singapura</option>
-                <option value="Batam">Batam</option>
-                <option value="Johor Bahru">Johor Bahru</option>
-                <option value="Tanjung Pinang">Tanjung Pinang</option>
+                 {/* Sama seperti atas, tampilkan semua opsi */}
+                 <optgroup label="SINGAPURA">
+                    {PORTS.SINGAPURA.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
+                <optgroup label="BATAM">
+                    {PORTS.BATAM.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
+                <optgroup label="JOHOR (MALAYSIA)">
+                    {PORTS.JOHOR.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
+                <optgroup label="KEPRI LAINNYA">
+                    {PORTS.TANJUNG_PINANG.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                    {PORTS.KARIMUN.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
+                </optgroup>
               </select>
             </div>
           </div>
         </div>
 
-        {/* CONTAINER SORTING & FILTER OPERATOR */}
+        {/* Filter Sort Bar (Tetap sama) */}
         <div className="filter-sort-bar">
-          
-          {/* 1. SORTING TABS (Waktu & Harga) */}
-          <div className="sort-tabs">
-            <button 
-              className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`}
-              onClick={() => { setSortBy('time'); }} 
-            >
-              🕒 Waktu Paling Pagi
-            </button>
-            <button 
-              className={`tab-btn ${sortBy === 'price' ? 'active' : ''}`}
-              onClick={() => { setSortBy('price'); }} 
-            >
-              💲 Harga Termurah
-            </button>
-          </div>
-          
-          {/* 2. FILTER OPERATOR (PILL BUTTONS) */}
-          <div className="operator-pills">
-            {uniqueOperators.map(op => (
-              <button 
-                key={op}
-                className={`op-pill ${selectedOperator === op ? 'active' : ''}`}
-                onClick={() => setSelectedOperator(op)}
-              >
-                {op === 'All' ? 'Semua Kapal' : op}
-              </button>
-            ))}
-          </div>
-
+            {/* ... (Kode Sort Tabs & Operator Pills sama seperti sebelumnya) ... */}
+             <div className="sort-tabs">
+                <button className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`} onClick={() => setSortBy('time')}>🕒 Waktu Paling Pagi</button>
+                <button className={`tab-btn ${sortBy === 'price' ? 'active' : ''}`} onClick={() => setSortBy('price')}>💲 Harga Termurah</button>
+             </div>
+             <div className="operator-pills">
+                {uniqueOperators.map(op => (
+                <button key={op} className={`op-pill ${selectedOperator === op ? 'active' : ''}`} onClick={() => setSelectedOperator(op)}>
+                    {op === 'All' ? 'Semua Kapal' : op}
+                </button>
+                ))}
+             </div>
         </div>
 
-        {/* LIST RESULT */}
+        {/* List Result */}
         <div className="schedule-list">
           {filteredData.length > 0 ? (
             filteredData.map(item => (
@@ -141,7 +139,7 @@ const FerryPartners: React.FC = () => {
                 time={item.time}
                 prices={item.prices}
                 note={item.note}
-                fromPort={item.fromPort} // TAMBAHAN
+                fromPort={item.fromPort}
                 toPort={item.toPort}
               />
             ))
@@ -149,9 +147,8 @@ const FerryPartners: React.FC = () => {
             <div className="empty-state">
               <h3>Tidak ada jadwal ditemukan 😔</h3>
               <p>
-                Rute dari <strong>{filterOrigin}</strong> ke <strong>{filterDest}</strong> 
-                {selectedOperator !== 'All' && <span> dengan operator {selectedOperator}</span>}
-                <br/>tidak tersedia.
+                Tidak ada jadwal langsung dari <strong>{filterOrigin}</strong> ke <strong>{filterDest}</strong>.
+                <br/>Coba ganti pelabuhan atau cek rute transit.
               </p>
             </div>
           )}
