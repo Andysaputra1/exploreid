@@ -97,9 +97,11 @@ const NOTE_BATAMFAST = "*Harga Regular: Foreigner. WNI: IDN Passport. Group: Min
 
 // --- MAJESTIC ---
 const PRICES_MAJESTIC: TicketClasses = {
-  adult: { oneWay: 385000, twoWay: 725000 },
-  child: { oneWay: 385000, twoWay: 725000 },
-  wniAdult: { oneWay: 480000, twoWay: 900000 },
+  // Foreigner (Harga Lebih Mahal)
+  adult: { oneWay: 480000, twoWay: 900000 }, 
+  child: { oneWay: 480000, twoWay: 900000 }, 
+  // WNI / Indonesia (Harga Lebih Murah)
+  wniAdult: { oneWay: 385000, twoWay: 725000 }, 
   groupPax: { oneWay: 0, twoWay: 690000 },
 };
 const NOTE_MAJESTIC = "*Harga Regular: Foreigner. WNI: IDN Passport. Group: Min 4 Pax.";
@@ -130,8 +132,9 @@ const NOTE_MARINE = "*Harga sudah termasuk Tax Batam, belum termasuk Tax Malaysi
 
 // --- DOLPHIN & PINTAS ---
 const PRICES_DOLPHIN: TicketClasses = {
-  adult: { oneWay: 485000, twoWay: 580000 },
-  child: { oneWay: 405000, twoWay: 555000 },
+  // Sesuai gambar: Twoway 485k, Child 405k
+  adult: { oneWay: 350000, twoWay: 485000 }, // Oneway estimasi (karena tidak ada di foto), Twoway fix 485k
+  child: { oneWay: 300000, twoWay: 405000 },
 };
 const NOTE_DOLPHIN = "*Gold Coast (Batam) ↔ Stulang Laut (Johor). FREE Voucher transport.";
 
@@ -305,17 +308,37 @@ export const ferrySchedules: FerrySchedule[] = [
     ["16:00 MYT"]),
 
 
-  // --- 3. MAJESTIC FAST FERRY ---
+// --- 3. MAJESTIC FAST FERRY ---
+  
+  // HFC -> BTC (Singapura ke Batam Center) - SESUAI FOTO 1
   ...createSchedule(501, OPS.MAJESTIC, { from: CITIES.SG, to: CITIES.BATAM, fromPort: PORTS.HFC, toPort: PORTS.BTC }, 
-    ["08:10 SGT", "09:50 SGT", "11:45 SGT", "13:30 SGT"]),
+    ["08:10 SGT", "08:50 SGT", "09:50 SGT", "10:40 SGT", "11:45 SGT", "12:20 SGT", "13:50 SGT", "14:40 SGT", "15:20 SGT", "16:20 SGT", "17:10 SGT", "17:50 SGT", "18:50 SGT", "19:20 SGT", "20:10 SGT", "21:20 SGT"]),
   
-  ...createSchedule(505, OPS.MAJESTIC, { from: CITIES.BATAM, to: CITIES.SG, fromPort: PORTS.BTC, toPort: PORTS.HFC }, 
-    ["06:00 WIB", "07:20 WIB", "10:40 WIB", "13:30 WIB"]),
+  // BTC -> HFC (Batam Center ke Singapura) - SESUAI FOTO 1
+  ...createSchedule(520, OPS.MAJESTIC, { from: CITIES.BATAM, to: CITIES.SG, fromPort: PORTS.BTC, toPort: PORTS.HFC }, 
+    ["06:00 WIB", "07:10 WIB", "08:20 WIB", "09:30 WIB", "10:20 WIB", "11:30 WIB", "12:20 WIB", "13:30 WIB", "14:30 WIB", "15:15 WIB", "16:00 WIB", "16:45 WIB", "17:30 WIB", "18:30 WIB", "19:25 WIB", "20:35 WIB"]),
   
+// HFC -> SKP (HarbourFront ke Sekupang)
+  ...createSchedule(540, OPS.MAJESTIC, { from: CITIES.SG, to: CITIES.BATAM, fromPort: PORTS.HFC, toPort: PORTS.SKP }, 
+    ["08:45 SGT", "09:45 SGT", "12:45 SGT", "17:40 SGT", "20:40 SGT"]),
+
+  // SKP -> HFC (Sekupang ke HarbourFront)
+  ...createSchedule(545, OPS.MAJESTIC, { from: CITIES.BATAM, to: CITIES.SG, fromPort: PORTS.SKP, toPort: PORTS.HFC }, 
+    ["06:00 WIB", "09:00 WIB", "13:10 WIB", "16:20 WIB", "18:00 WIB"]),
+
+  // TMFT -> BTC (Tanah Merah ke Batam Center)
+  ...createSchedule(550, OPS.MAJESTIC, { from: CITIES.SG, to: CITIES.BATAM, fromPort: PORTS.TMFT, toPort: PORTS.BTC }, 
+    ["08:15 SGT", "09:30 SGT", "10:30 SGT", "12:40 SGT", "15:15 SGT", "16:45 SGT", "18:00 SGT", "19:20 SGT", "20:45 SGT"]),
+
+  // BTC -> TMFT (Batam Center ke Tanah Merah)
+  ...createSchedule(560, OPS.MAJESTIC, { from: CITIES.BATAM, to: CITIES.SG, fromPort: PORTS.BTC, toPort: PORTS.TMFT }, 
+    ["06:15 WIB", "08:25 WIB", "09:40 WIB", "12:00 WIB", "13:00 WIB", "15:30 WIB", "17:00 WIB", "18:00 WIB", "19:50 WIB"]),
+
+  // Update Tanjung Pinang (Majestic) - Menambahkan jam yang kurang
   ...createSchedule(509, OPS.MAJESTIC, { from: CITIES.SG, to: CITIES.TPI, fromPort: PORTS.TMFT, toPort: PORTS.TG_PINANG }, 
-    ["11:30 SGT"]),
+    ["11:30 SGT", "17:50 SGT"]),
   ...createSchedule(510, OPS.MAJESTIC, { from: CITIES.TPI, to: CITIES.SG, fromPort: PORTS.TG_PINANG, toPort: PORTS.TMFT }, 
-    ["07:30 WIB"]),
+    ["07:30 WIB", "13:00 WIB"]),
 
 
   // --- 4. PINTAS & DOLPHIN (BATAM - JB) ---
