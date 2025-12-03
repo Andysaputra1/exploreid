@@ -3,265 +3,261 @@
    ========================================= */
 
 .navbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 80px; /* Tinggi fix */
-  z-index: 1000;
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 80px; z-index: 1000;
   transition: all 0.4s ease;
-  background-color: transparent; /* Awal transparan */
-  display: flex;
-  align-items: center;
+  background-color: transparent;
+  display: flex; align-items: center;
 }
 
-/* Saat Discroll: Background Putih & Shadow */
 .navbar.scrolled {
   background-color: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-  height: 70px; /* Sedikit mengecil */
+  height: 70px;
 }
 
 .navbar-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  position: relative;
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; position: relative;
 }
 
-/* Wrapper Logo & Hamburger */
 .brand-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
 }
 
-/* Wrapper Menu & Actions */
 .navbar-menu-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 32px;
+  display: flex; align-items: center; gap: 32px;
 }
 
-/* =========================================
-   2. BRANDING (LOGO)
-   ========================================= */
-.navbar-brand {
-  display: flex; align-items: center; gap: 10px; cursor: pointer;
-}
+/* BRANDING */
+.navbar-brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .brand-logo { height: 40px; width: auto; }
-
 .brand-name {
-  font-size: 1.5rem; font-weight: 700;
-  color: white; /* Default putih di Hero */
-  letter-spacing: -0.5px;
-  transition: color 0.3s ease;
+  font-size: 1.5rem; font-weight: 700; color: white;
+  letter-spacing: -0.5px; transition: color 0.3s ease;
 }
-.navbar.scrolled .brand-name { color: #222; } /* Jadi hitam saat scroll */
+.navbar.scrolled .brand-name { color: #222; }
 
-/* =========================================
-   3. LINKS MENU (TENGAH)
-   ========================================= */
-.navbar-links {
-  display: flex; gap: 32px; list-style: none; margin: 0; padding: 0;
-}
-
+/* LINKS MENU */
+.navbar-links { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
 .navbar-links a {
-  font-size: 0.95rem; font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  position: relative; text-decoration: none;
-  transition: color 0.3s ease;
+  font-size: 0.95rem; font-weight: 500; color: rgba(255, 255, 255, 0.9);
+  position: relative; text-decoration: none; transition: color 0.3s ease;
 }
-
 .navbar.scrolled .navbar-links a { color: #666; }
-.navbar-links a:hover, .navbar.scrolled .navbar-links a:hover {
-  color: #F29F05;
-}
+.navbar-links a:hover, .navbar.scrolled .navbar-links a:hover { color: #F29F05; }
 
 /* EFEK GARIS BAWAH SAAT HOVER */
 .navbar-links a::after {
-  content: '';
-  position: absolute;
-  width: 0; height: 2px;
-  bottom: -4px; left: 0;
-  background-color: #F29F05;
+  content: ''; position: absolute; width: 0; height: 2px;
+  bottom: -4px; left: 0; background-color: #F29F05;
   transition: width 0.3s ease-in-out;
 }
 .navbar-links a:hover::after { width: 100%; }
 
-/* =========================================
-   4. ACTIONS (SEARCH & BUTTON)
-   ========================================= */
-.navbar-actions {
-  display: flex; align-items: center; gap: 16px;
-}
+/* ACTIONS (SEARCH & BUTTON) */
+.navbar-actions { display: flex; align-items: center; gap: 16px; }
 
-/* --- Search Bar --- */
+/* Search Bar */
 .search-container { position: relative; }
-
 .search-wrapper {
-  display: flex; align-items: center;
-  background-color: #ffffff; /* Putih Solid */
-  padding: 8px 16px;
-  border-radius: 50px;
-  border: 1px solid #e0e0e0;
+  display: flex; align-items: center; background-color: #ffffff;
+  padding: 8px 16px; border-radius: 50px; border: 1px solid #e0e0e0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
-
 .search-icon { width: 18px; height: 18px; color: #666; margin-right: 8px; }
-
 .search-wrapper input {
   border: none; background: transparent; outline: none;
-  font-size: 0.9rem; width: 150px;
-  font-family: inherit; color: #333; /* Teks input hitam */
+  font-size: 0.9rem; width: 150px; font-family: inherit; color: #333;
 }
 .search-wrapper input::placeholder { color: #999; }
 
-/* --- Search Dropdown --- */
+/* Search Dropdown */
 .search-dropdown {
-  position: absolute; top: 50px; left: 0;
-  width: 280px; background: white;
+  position: absolute; top: 50px; left: 0; width: 280px; background: white;
   border-radius: 12px; padding: 10px; z-index: 1100;
-  border: 1px solid #eee;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
-.search-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px; border-radius: 8px; cursor: pointer;
-  transition: 0.2s;
-}
+.search-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; cursor: pointer; }
 .search-item:hover { background-color: #f5f5f5; }
 .search-item img { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
 .item-name { font-size: 0.9rem; font-weight: 600; color: #333; display: block; }
 .item-type { font-size: 0.75rem; color: #888; }
 .search-empty { padding: 15px; text-align: center; color: #999; font-size: 0.9rem; }
 
-/* --- Button Book Now --- */
+/* Button Book Now */
 .btn-primary {
   background-color: #F29F05; color: white; border: none;
   padding: 10px 24px; border-radius: 50px;
   font-weight: 600; font-size: 0.95rem; cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 .btn-primary:hover { background-color: #d48800; transform: translateY(-2px); }
 
+
 /* =========================================
-   5. MODAL POP-UP (BOOK NOW)
+   MODAL POPUP BOOKING (LEBAR 850PX)
    ========================================= */
-.modal-overlay {
+
+.booking-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
-  z-index: 2000;
-  display: flex; justify-content: center; align-items: center;
-  animation: fadeIn 0.3s ease;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+  z-index: 2000; display: flex; justify-content: center; align-items: center;
+  animation: fadeIn 0.2s ease;
 }
 
-.modal-card {
-  background: white; width: 90%; max-width: 400px;
-  padding: 30px; border-radius: 20px; position: relative;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-  animation: slideUp 0.3s ease;
+.booking-card {
+  background: white;
+  width: 90%; 
+  
+  /* --- BAGIAN INI SUDAH DIPERLEBAR JADI 850px --- */
+  max-width: 850px; 
+  
+  border-radius: 24px; padding: 30px; position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.3s ease;
+  max-height: 90vh; overflow-y: auto;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
-.btn-close {
-  position: absolute; top: 15px; right: 15px;
-  background: #f0f0f0; border: none;
-  width: 30px; height: 30px; border-radius: 50%;
-  cursor: pointer; font-weight: bold; color: #666;
+.btn-close-booking {
+  position: absolute; top: 15px; right: 15px; background: #f5f5f5;
+  border: none; width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; font-weight: bold; color: #555; display: flex; justify-content: center; align-items: center;
 }
-.btn-close:hover { background: #ff4d4d; color: white; }
+.btn-close-booking:hover { background: #ffdddd; color: red; }
 
-.modal-header { text-align: center; margin-bottom: 20px; }
-.modal-header h3 { font-size: 1.5rem; font-weight: 700; color: #222; margin-bottom: 5px; }
-.modal-header p { color: #888; font-size: 0.9rem; }
+.booking-header { text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
+.booking-header h3 { font-size: 1.6rem; color: #1e293b; margin: 0 0 5px 0; }
+.booking-header p { color: #64748b; font-size: 0.9rem; margin: 0; }
 
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; }
-.form-group input {
-  width: 100%; padding: 12px; border: 1px solid #ddd;
-  border-radius: 10px; font-size: 1rem; outline: none;
+/* Style untuk Form Groups */
+.booking-body .form-group { margin-bottom: 15px; }
+
+/* Tombol Navigasi di Header */
+.btn-back-text { background: none; border: none; color: #666; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+.booking-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
+.booking-header-row h3 { margin: 0; font-size: 1.4rem; color: #1e293b; }
+
+/* --- STEP 2: CALCULATOR STYLES --- */
+.booking-section { margin-bottom: 20px; }
+.section-label { display: block; font-size: 0.95rem; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+
+.toggle-container { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; }
+.toggle-btn { flex: 1; border: none; background: transparent; padding: 12px; border-radius: 8px; font-weight: 600; color: #64748b; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
+.toggle-btn.active { background: white; color: #F29F05; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+.counter-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; border: 1px solid #f1f5f9; border-radius: 12px; }
+.c-title { display: block; font-weight: 700; color: #334155; }
+.c-price { font-size: 0.75rem; color: #94a3b8; }
+
+.pax-stepper.small { display: flex; align-items: center; gap: 10px; }
+.step-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e2e8f0; background: white; color: #F29F05; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.step-btn:hover { background: #fff7ed; }
+.pax-number { font-weight: 700; width: 20px; text-align: center; }
+
+.booking-footer { margin-top: 10px; padding-top: 15px; border-top: 2px dashed #e2e8f0; }
+.total-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.total-label { font-size: 0.9rem; color: #64748b; }
+.total-amount { font-size: 1.6rem; font-weight: 800; color: #F29F05; }
+
+.btn-wa-confirm, .btn-wa-premium {
+  width: 100%; padding: 16px; background: #25D366; color: white;
+  border: none; border-radius: 12px; font-weight: 700; font-size: 1.1rem;
+  cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn-submit-wa {
-  width: 100%; padding: 12px; background-color: #F29F05;
-  color: white; font-weight: 600; border: none; border-radius: 50px;
-  cursor: pointer; margin-top: 10px;
+.btn-wa-confirm:hover, .btn-wa-premium:hover { background: #1ebc57; transform: translateY(-2px); }
+
+
+/* --- NEW DROPDOWN STYLE (SELECT) --- */
+.custom-select-wrapper { position: relative; width: 100%; }
+
+.navbar-ferry-select {
+    width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0;
+    background-color: #fff; font-size: 0.95rem; font-weight: 500; color: #1e293b;
+    cursor: pointer; outline: none; appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right 15px center; background-size: 16px;
+    transition: all 0.2s;
 }
+.navbar-ferry-select:hover { border-color: #cbd5e0; }
+.navbar-ferry-select:focus { border-color: #F29F05; box-shadow: 0 0 0 3px rgba(242, 159, 5, 0.1); }
+
+
+/* --- LIST JADWAL DI DALAM MODAL --- */
+.modal-schedule-list-label {
+    font-size: 0.9rem; font-weight: 700; color: #334155;
+    margin-top: 20px; margin-bottom: 10px; border-top: 1px solid #f1f5f9; padding-top: 15px;
+}
+
+.modal-schedule-list { max-height: 250px; overflow-y: auto; padding-right: 5px; }
+.modal-schedule-list::-webkit-scrollbar { width: 4px; }
+.modal-schedule-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+.modal-sch-item {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px;
+    border-radius: 12px; margin-bottom: 8px; transition: 0.2s;
+}
+.modal-sch-item:hover { border-color: #F29F05; background: #fff7ed; }
+
+.sch-info-left { display: flex; flex-direction: column; }
+.sch-time { font-size: 1.1rem; font-weight: 800; color: #1e293b; }
+.sch-name { font-size: 0.8rem; color: #64748b; }
+
+.btn-sch-book {
+    background: #F29F05; color: white; border: none; padding: 6px 16px;
+    border-radius: 50px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+}
+.btn-sch-book:hover { background: #d97706; transform: scale(1.05); }
+
+.booking-summary-compact {
+    background: #f1f5f9; padding: 10px 15px; border-radius: 8px;
+    display: flex; justify-content: space-between; font-weight: 700;
+    color: #334155; margin-bottom: 20px; font-size: 0.9rem;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
 
 /* =========================================
-   6. RESPONSIVE MOBILE (HP & TABLET)
+   6. RESPONSIVE MOBILE (< 768px)
    ========================================= */
-
-/* Default: Sembunyikan Hamburger di Desktop */
 .hamburger-btn { display: none; }
 
-/* --- MEDIA QUERY KHUSUS HP (< 768px) --- */
 @media (max-width: 768px) {
+  .navbar-content { flex-direction: column; align-items: flex-start; padding: 15px 20px; }
+  .brand-wrapper { width: 100%; justify-content: space-between; }
   
-  /* Layout Navbar jadi Vertikal (Logo Atas, Menu Bawah) */
-  .navbar-content {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px 20px;
-  }
-
-  /* Baris Atas: Logo Kiri, Hamburger Kanan */
-  .brand-wrapper {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  /* Tampilkan Hamburger */
-  .hamburger-btn {
-    display: block;
-    background: none; border: none;
-    font-size: 1.8rem; cursor: pointer; z-index: 1100;
-    color: white; transition: 0.3s;
-  }
+  .hamburger-btn { display: block; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: white; transition: 0.3s; }
   .navbar.scrolled .hamburger-btn { color: #333; }
 
-  /* Sembunyikan Menu Wrapper secara default */
   .navbar-menu-wrapper {
-    display: none; /* Default Hilang */
-    width: 100%;
-    flex-direction: column; /* Menu susun ke bawah */
-    gap: 20px;
-    padding: 20px;
-    background-color: white; /* Background Putih */
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    margin-top: 15px;
+    display: none; width: 100%; flex-direction: column; gap: 20px; padding: 20px;
+    background-color: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 15px;
   }
+  .navbar-menu-wrapper.mobile-open { display: flex; }
 
-  /* Munculkan Menu saat tombol hamburger diklik */
-  .navbar-menu-wrapper.mobile-open {
-    display: flex; /* Muncul */
-  }
-
-  /* Fix Warna Text Link di dalam Menu Mobile (Harus Hitam) */
-  .navbar-menu-wrapper .navbar-links a {
-    color: #333; /* Hitam */
-    font-size: 1rem;
-    display: block;
-    padding: 10px 0;
-  }
-  
-  /* Hilangkan garis hover di mobile biar bersih */
-  .navbar-links a::after { display: none; }
-
-  /* Susun Ulang Item */
+  .navbar-menu-wrapper .navbar-links a { color: #333; font-size: 1rem; display: block; padding: 10px 0; }
   .navbar-links { flex-direction: column; width: 100%; text-align: center; gap: 10px; }
   .navbar-actions { flex-direction: column; width: 100%; }
   
-  /* Lebarkan Search & Button */
-  .search-container, .search-wrapper, .search-wrapper input { width: 100%; }
-  .btn-primary { width: 100%; margin-top: 10px; }
-  
-  /* Sembunyikan dropdown search di mobile biar ga ribet (opsional) */
-  .search-dropdown { width: 100%; position: static; box-shadow: none; border: none; padding: 0; }
-}
+  .search-container, .search-wrapper input, .btn-primary { width: 100%; }
+  .btn-primary { margin-top: 10px; }
+  .navbar-links a::after { display: none; }
 
-/* Animasi */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  /* Modal Mobile */
+  .booking-card {
+    width: 100%; /* Full width di HP */
+    max-width: 100%; /* Reset max-width */
+    border-radius: 20px 20px 0 0; /* Gaya bottom sheet */
+    position: absolute; /* Posisikan absolut di bawah */
+    bottom: 0;
+    left: 0;
+    margin: 0; /* Reset margin */
+    max-height: 85vh; /* Tinggi maksimal 85% layar */
+  }
+}
