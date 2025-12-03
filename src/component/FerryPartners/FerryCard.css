@@ -224,3 +224,19 @@
   .action { grid-column: span 2; margin-top: 10px; }
   .btn-book-small { width: 100%; }
 }
+
+/* ... CSS yang lama biarkan saja ... */
+
+/* Tambahan Style untuk Button Disabled (Jika Penumpang 0) */
+.btn-wa-premium.disabled {
+    background-color: #cbd5e1; /* Warna abu-abu */
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-wa-premium.disabled:hover {
+    background-color: #cbd5e1;
+    transform: none;
+}

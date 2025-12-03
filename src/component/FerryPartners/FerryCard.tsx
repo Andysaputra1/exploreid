@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { createPortal } from 'react-dom'; // WAJIB: Agar popup muncul di atas segalanya
+import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import './FerryCard.css';
 import { TicketClasses } from '../../data/FerryData'; 
 
@@ -15,16 +15,74 @@ interface FerryProps {
   toPort: string;
 }
 
-const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, time, prices, note, fromPort, toPort }) => {
-  const [isOpen, setIsOpen] = useState(false); // Untuk dropdown tabel harga
+type TicketCategory = 'regular' | 'wni' | 'vip';
 
-  // --- STATE UNTUK MODAL BOOKING ---
+const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, time, prices, note, fromPort, toPort }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   
-  // Pilihan User di dalam Modal
-  const [tripType, setTripType] = useState<'oneWay' | 'twoWay'>('twoWay'); // Default PP
-  const [ticketClass, setTicketClass] = useState<'standard' | 'wni' | 'vip'>('standard');
+  const [tripType, setTripType] = useState<'oneWay' | 'twoWay'>('twoWay');
+  const [selectedCategory, setSelectedCategory] = useState<TicketCategory>('regular');
   const [pax, setPax] = useState({ adult: 1, child: 0 });
+
+  // --- 1. LOGIC DETEKSI KATEGORI (LABEL UTAMA) ---
+  const availableCategories = useMemo(() => {
+    const hasWni = !!prices.wniAdult;
+    let mainLabel = "Paspor Asing (Foreigner)"; 
+
+    if (!hasWni) {
+        mainLabel = "Tiket Reguler (All Passport)";
+    }
+    if (name.includes("Putri")) {
+        mainLabel = "Tiket Reguler";
+    }
+
+    const cats: { value: TicketCategory; label: string }[] = [
+        { value: 'regular', label: mainLabel }
+    ];
+
+    if (prices.wniAdult) {
+        cats.push({ value: 'wni', label: "Paspor Indonesia (WNI)" });
+    }
+    if (prices.vipAdult) {
+        cats.push({ value: 'vip', label: "Kelas VIP" });
+    }
+    return cats;
+  }, [prices, name]);
+
+  // --- 2. LOGIC AMBIL HARGA (PERBAIKAN LOGIC WNI) ---
+  const getPrice = (type: 'adult' | 'child') => {
+    const key = tripType; 
+
+    if (selectedCategory === 'vip') {
+        if (type === 'adult') return prices.vipAdult?.[key] || 0;
+        return prices.vipChild?.[key] || prices.child[key]; 
+    }
+    
+    if (selectedCategory === 'wni') {
+        if (type === 'adult') return prices.wniAdult?.[key] || 0;
+        
+        // PERBAIKAN DI SINI:
+        // Jika wniChild ADA, pakai harga wniChild.
+        // Jika TIDAK ADA, berarti harga WNI berlaku Flat (Sama dengan Dewasa)
+        return prices.wniChild?.[key] || prices.wniAdult?.[key] || 0;
+    }
+
+    // Default Regular
+    return prices[type][key];
+  };
+
+  const currentAdultPrice = getPrice('adult');
+  const currentChildPrice = getPrice('child');
+  const totalEstimation = (pax.adult * currentAdultPrice) + (pax.child * currentChildPrice);
+  const totalPax = pax.adult + pax.child;
+
+  const handleOpenBooking = (category: TicketCategory) => {
+    setSelectedCategory(category);
+    setTripType('twoWay'); 
+    setPax({ adult: 1, child: 0 }); 
+    setShowBooking(true);
+  };
 
   const getTimeDisclaimer = (timeStr: string) => {
     if (timeStr.includes('SGT')) return 'Singapore Time';
@@ -32,41 +90,11 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
     return 'WIB (Indonesia Time)';
   };
 
-  // --- LOGIC BUKA MODAL ---
-  const handleOpenBooking = (initialClass: 'standard' | 'wni' | 'vip') => {
-    setTicketClass(initialClass);
-    setTripType('twoWay'); // Default tawarin PP
-    setPax({ adult: 1, child: 0 }); // Reset jumlah penumpang
-    setShowBooking(true);
-  };
-
-  // --- HELPER: HITUNG TOTAL HARGA ---
-  const calculateTotal = () => {
-    let adultPrice = 0;
-    let childPrice = 0;
-
-    // 1. Tentukan Harga Berdasarkan Kelas & Tipe Perjalanan
-    if (ticketClass === 'vip') {
-        adultPrice = prices.vipAdult ? prices.vipAdult[tripType] : 0;
-        // Fallback: kalau harga anak VIP gak ada, pakai harga dewasa VIP
-        childPrice = prices.vipChild ? prices.vipChild[tripType] : adultPrice; 
-    } else if (ticketClass === 'wni') {
-        adultPrice = prices.wniAdult ? prices.wniAdult[tripType] : 0;
-        childPrice = prices.wniChild ? prices.wniChild[tripType] : adultPrice;
-    } else {
-        // Standard / Foreigner
-        adultPrice = prices.adult[tripType];
-        childPrice = prices.child[tripType];
-    }
-
-    return (pax.adult * adultPrice) + (pax.child * childPrice);
-  };
-
-  // --- LOGIC KIRIM KE WHATSAPP ---
   const handleSendToWA = () => {
-    const total = calculateTotal();
-    const classNameMap = { standard: 'Paspor Asing / Reguler', wni: 'WNI (Paspor Indonesia)', vip: 'VIP Class' };
-    const tripNameMap = { oneWay: 'Sekali Jalan (One Way)', twoWay: 'Pulang Pergi (Two Way)' };
+    if (totalPax === 0) return;
+
+    const tripLabel = tripType === 'twoWay' ? 'Pulang Pergi (Two Way)' : 'Sekali Jalan (One Way)';
+    const categoryLabel = availableCategories.find(c => c.value === selectedCategory)?.label || 'Reguler';
 
     const message = `
 Halo Admin Reservasi.id! 👋
@@ -77,12 +105,12 @@ Saya ingin memesan tiket ferry:
 ⏰ *Jam:* ${time}
 
 📋 *Detail Pesanan:*
-• Tipe: ${tripNameMap[tripType]}
-• Kelas: ${classNameMap[ticketClass]}
+• Tipe: ${tripLabel}
+• Kategori: ${categoryLabel}
 • Dewasa: ${pax.adult} Org
 • Anak: ${pax.child} Org
 
-💰 *Total Estimasi:* IDR ${total.toLocaleString('id-ID')}
+💰 *Total Estimasi:* IDR ${totalEstimation.toLocaleString('id-ID')}
 
 Mohon info ketersediaannya. Terima kasih!
     `.trim();
@@ -91,24 +119,29 @@ Mohon info ketersediaannya. Terima kasih!
     setShowBooking(false);
   };
 
-  // --- RENDER TABLE HARGA (DROPDOWN) ---
+  // --- RENDER TABLE HARGA (PERBAIKAN LABEL WNI) ---
   const renderPriceTable = () => {
-    const hasWni = prices.wniAdult !== undefined;
-    const hasVip = prices.vipAdult !== undefined;
     const isForeignSame = prices.adult.oneWay === prices.child.oneWay;
+    const hasWni = !!prices.wniAdult;
 
-    const PriceRow = ({ label, owPrice, twPrice, type = 'standard' }: any) => {
-        let rowClass = '', btnClass = '', btnText = 'Pesan', icon = '';
-        if (type === 'wni') { rowClass = 'id-promo-row'; btnClass = 'wni-promo-btn'; btnText = 'Pesan WNI'; icon = '✨ '; }
-        if (type === 'vip') { rowClass = 'vip-class-row'; btnClass = 'vip'; btnText = 'Pesan VIP'; icon = '👑 '; }
+    const getHeaderLabel = () => {
+        if (prices.vipAdult) return "Kelas Reguler";
+        if (hasWni) return "Paspor Asing (Foreigner)";
+        return "Tiket Reguler (All Passport)"; 
+    };
+
+    const PriceRow = ({ label, ow, pp, cat = 'regular' }: any) => {
+        let btnClass = '', btnText = 'Pesan';
+        if (cat === 'wni') { btnClass = 'wni-promo-btn'; btnText = 'Pesan WNI'; }
+        if (cat === 'vip') { btnClass = 'vip'; btnText = 'Pesan VIP'; }
 
         return (
-            <div className={`p-row ${rowClass}`}>
-                <div className="p-col"><strong>{icon}{label}</strong></div>
-                <div className="p-col">Rp {owPrice.toLocaleString()}</div>
-                <div className="p-col">Rp {twPrice.toLocaleString()}</div>
+            <div className={`p-row ${cat === 'wni' ? 'id-promo-row' : ''} ${cat === 'vip' ? 'vip-class-row' : ''}`}>
+                <div className="p-col"><strong>{label}</strong></div>
+                <div className="p-col">Rp {ow.toLocaleString()}</div>
+                <div className="p-col">Rp {pp.toLocaleString()}</div>
                 <div className="p-col action">
-                    <button className={`btn-book-small ${btnClass}`} onClick={() => handleOpenBooking(type)}>
+                    <button className={`btn-book-small ${btnClass}`} onClick={() => handleOpenBooking(cat)}>
                         {btnText}
                     </button>
                 </div>
@@ -118,31 +151,43 @@ Mohon info ketersediaannya. Terima kasih!
 
     return (
         <>
-            {/* Header Kategori Standard */}
-            <h4 className="table-subtitle">{hasVip ? "Kelas Reguler" : "Paspor Asing (Foreigner)"}</h4>
+            {/* 1. REGULAR */}
+            <h4 className="table-subtitle">{getHeaderLabel()}</h4>
             {isForeignSame ? 
-                <PriceRow label={hasVip ? "Tiket Reguler" : "Tiket Foreigner"} owPrice={prices.adult.oneWay} twPrice={prices.adult.twoWay} type="standard"/> :
+                <PriceRow label="Tiket All Passport" ow={prices.adult.oneWay} pp={prices.adult.twoWay} /> :
                 <>
-                    <PriceRow label="Dewasa" owPrice={prices.adult.oneWay} twPrice={prices.adult.twoWay} type="standard"/>
-                    <PriceRow label="Anak-anak" owPrice={prices.child.oneWay} twPrice={prices.child.twoWay} type="standard"/>
+                    <PriceRow label="Dewasa" ow={prices.adult.oneWay} pp={prices.adult.twoWay} />
+                    <PriceRow label="Anak-anak" ow={prices.child.oneWay} pp={prices.child.twoWay} />
                 </>
             }
-            
-            {/* Header Kategori WNI */}
-            {hasWni && (
+
+            {/* 2. WNI (LOGIC BARU DI SINI) */}
+            {prices.wniAdult && (
                 <>
                     <h4 className="table-subtitle promo-subtitle">Paspor Indonesia (WNI)</h4>
-                    <PriceRow label="Dewasa (WNI)" owPrice={prices.wniAdult!.oneWay} twPrice={prices.wniAdult!.twoWay} type="wni" />
-                    {prices.wniChild && <PriceRow label="Anak (WNI)" owPrice={prices.wniChild.oneWay} twPrice={prices.wniChild.twoWay} type="wni" />}
+                    
+                    {/* Cek: Apakah ada harga khusus anak WNI? */}
+                    {prices.wniChild ? (
+                        /* Jika ADA (Sindo, BatamFast), tampilkan pisah */
+                        <>
+                            <PriceRow label="Dewasa (WNI)" ow={prices.wniAdult.oneWay} pp={prices.wniAdult.twoWay} cat="wni" />
+                            <PriceRow label="Anak (WNI)" ow={prices.wniChild.oneWay} pp={prices.wniChild.twoWay} cat="wni" />
+                        </>
+                    ) : (
+                        /* Jika TIDAK ADA (Majestic, Horizon), tampilkan satu baris saja */
+                        <PriceRow label="Tiket WNI (All Ages)" ow={prices.wniAdult.oneWay} pp={prices.wniAdult.twoWay} cat="wni" />
+                    )}
                 </>
             )}
 
-            {/* Header Kategori VIP */}
-            {hasVip && (
+            {/* 3. VIP */}
+            {prices.vipAdult && (
                 <>
                     <h4 className="table-subtitle vip-subtitle">Kelas VIP</h4>
-                    <PriceRow label="VIP Dewasa" owPrice={prices.vipAdult!.oneWay} twPrice={prices.vipAdult!.twoWay} type="vip" />
-                    {prices.vipChild && <PriceRow label="VIP Anak" owPrice={prices.vipChild.oneWay} twPrice={prices.vipChild.twoWay} type="vip" />}
+                    <PriceRow label="VIP Dewasa" ow={prices.vipAdult.oneWay} pp={prices.vipAdult.twoWay} cat="vip" />
+                    {prices.vipChild && (
+                        <PriceRow label="VIP Anak" ow={prices.vipChild.oneWay} pp={prices.vipChild.twoWay} cat="vip" />
+                    )}
                 </>
             )}
         </>
@@ -152,7 +197,7 @@ Mohon info ketersediaannya. Terima kasih!
   return (
     <div className={`ticket-card-wrapper ${isOpen ? 'open' : ''}`}>
       
-      {/* 1. KARTU UTAMA */}
+      {/* HEADER KARTU */}
       <div className="ticket-card">
         <div className="ticket-main">
           <div className="carrier-logo"><img src={image} alt={name} /></div>
@@ -166,8 +211,8 @@ Mohon info ketersediaannya. Terima kasih!
         <div className="ticket-time">
           <div className="time-display">
             <div className="time-group">
-              <span className="departure-time">{time}</span>
-              <span className="zone-info">{getTimeDisclaimer(time)}</span>
+                <span className="departure-time">{time}</span>
+                <span className="zone-info">{getTimeDisclaimer(time)}</span>
             </div>
             <span className="time-label">Keberangkatan</span>
           </div>
@@ -177,7 +222,9 @@ Mohon info ketersediaannya. Terima kasih!
           <div className="price-display">
             <span className="label-start">Mulai dari</span>
             <span className="currency">IDR</span>
-            <span className="amount">{(prices.wniAdult?.oneWay || prices.child.oneWay || prices.adult.oneWay).toLocaleString('id-ID')}</span>
+            <span className="amount">
+                {(prices.wniAdult?.oneWay || prices.child.oneWay || prices.adult.oneWay).toLocaleString('id-ID')}
+            </span>
           </div>
           <button className="btn-select" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? 'Tutup' : 'Pilih'} <span className={`arrow ${isOpen ? 'up' : 'down'}`}>▼</span>
@@ -185,7 +232,7 @@ Mohon info ketersediaannya. Terima kasih!
         </div>
       </div>
 
-      {/* 2. DROPDOWN TABEL HARGA */}
+      {/* DROPDOWN */}
       {isOpen && (
         <div className="ticket-details">
           <div className="price-table-container">
@@ -198,18 +245,16 @@ Mohon info ketersediaannya. Terima kasih!
         </div>
       )}
 
-      {/* 3. MODAL BOOKING POPUP (MENGGUNAKAN PORTAL) */}
+      {/* POPUP MODAL */}
       {showBooking && createPortal(
         <div className="booking-overlay" onClick={() => setShowBooking(false)}>
             <div className="booking-card" onClick={(e) => e.stopPropagation()}>
                 
-                {/* Header Modal */}
                 <div className="booking-header-row">
                     <h3>Atur Pesanan</h3>
                     <button className="btn-close-booking" onClick={() => setShowBooking(false)}>✕</button>
                 </div>
 
-                {/* Section A: Tipe Perjalanan */}
                 <div className="booking-section">
                     <label className="section-label">Tipe Perjalanan</label>
                     <div className="toggle-container">
@@ -218,48 +263,48 @@ Mohon info ketersediaannya. Terima kasih!
                     </div>
                 </div>
 
-                {/* Section B: Pilih Kelas */}
-                <div className="booking-section">
-                    <label className="section-label">Kategori Tiket</label>
-                    <select 
-                        className="class-select" 
-                        value={ticketClass} 
-                        onChange={(e) => setTicketClass(e.target.value as any)}
-                    >
-                        <option value="standard">{name.includes("Putri") ? "Reguler" : "Paspor Asing (Foreigner)"}</option>
-                        {prices.wniAdult && <option value="wni">Paspor Indonesia (WNI)</option>}
-                        {prices.vipAdult && <option value="vip">Kelas VIP</option>}
-                    </select>
-                </div>
+                {availableCategories.length > 1 && (
+                    <div className="booking-section">
+                        <label className="section-label">Kategori Tiket</label>
+                        <select 
+                            className="class-select" 
+                            value={selectedCategory} 
+                            onChange={(e) => setSelectedCategory(e.target.value as TicketCategory)}
+                        >
+                            {availableCategories.map(cat => (
+                                <option key={cat.value} value={cat.value}>{cat.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
-                {/* Section C: Counter Penumpang */}
                 <div className="booking-section">
                     <label className="section-label">Jumlah Penumpang</label>
                     
-                    {/* Dewasa */}
+                    {/* DEWASA */}
                     <div className="counter-row">
                         <div className="counter-info">
                             <span className="c-title">Dewasa</span>
-                            <span className="c-price">
-                                IDR {
-                                    (ticketClass === 'vip' ? (prices.vipAdult?.oneWay || 0) : 
-                                     ticketClass === 'wni' ? (prices.wniAdult?.oneWay || 0) : 
-                                     prices.adult.oneWay).toLocaleString()
-                                } /pax (OW)
-                            </span>
+                            <span className="c-price">IDR {currentAdultPrice.toLocaleString()} /pax</span>
                         </div>
                         <div className="pax-stepper small">
-                            <button className="step-btn" onClick={() => setPax({...pax, adult: Math.max(1, pax.adult - 1)})}>−</button>
+                            <button className="step-btn" onClick={() => setPax({...pax, adult: Math.max(0, pax.adult - 1)})}>−</button>
                             <span className="pax-number">{pax.adult}</span>
                             <button className="step-btn" onClick={() => setPax({...pax, adult: pax.adult + 1})}>+</button>
                         </div>
                     </div>
 
-                    {/* Anak */}
+                    {/* ANAK */}
                     <div className="counter-row">
                         <div className="counter-info">
                             <span className="c-title">Anak-anak</span>
-                            <span className="c-price">Usia 2-11 Tahun</span>
+                            <span className="c-price">
+                                {/* Tampilkan harga atau keterangan jika sama */}
+                                {selectedCategory === 'wni' && !prices.wniChild 
+                                    ? "(Sama dgn Dewasa)"
+                                    : `IDR ${currentChildPrice.toLocaleString()} /pax`
+                                }
+                            </span>
                         </div>
                         <div className="pax-stepper small">
                             <button className="step-btn" onClick={() => setPax({...pax, child: Math.max(0, pax.child - 1)})}>−</button>
@@ -269,20 +314,23 @@ Mohon info ketersediaannya. Terima kasih!
                     </div>
                 </div>
 
-                {/* Footer Total & Tombol WA */}
                 <div className="booking-footer">
                     <div className="total-section">
-                        <span className="total-label">Total Estimasi ({tripType === 'twoWay' ? 'PP' : '1 Way'})</span>
-                        <span className="total-amount">IDR {calculateTotal().toLocaleString('id-ID')}</span>
+                        <span className="total-label">Total ({totalPax} Pax)</span>
+                        <span className="total-amount">IDR {totalEstimation.toLocaleString('id-ID')}</span>
                     </div>
-                    <button className="btn-wa-premium" onClick={handleSendToWA}>
-                        Lanjut ke WhatsApp ➝
+                    <button 
+                        className={`btn-wa-premium ${totalPax === 0 ? 'disabled' : ''}`} 
+                        onClick={handleSendToWA}
+                        disabled={totalPax === 0}
+                    >
+                        {totalPax === 0 ? 'Pilih Penumpang' : 'Lanjut ke WhatsApp ➝'}
                     </button>
                 </div>
 
             </div>
         </div>,
-        document.body // KUNCI UTAMA: Render di luar component, nempel di Body
+        document.body
       )}
 
     </div>
