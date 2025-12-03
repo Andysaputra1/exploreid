@@ -221,3 +221,131 @@
   font-weight: 600;
   margin-top: 4px;
 }
+
+/* ... CSS Paling Bawah di FerryCard.css ... */
+
+/* Styling Subtitle (Untuk Kasus Paspor) */
+.table-subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+    color: var(--primary-dark);
+}
+
+.promo-subtitle {
+    color: var(--primary-orange);
+    border-bottom-color: var(--primary-orange);
+}
+
+.table-header-desktop {
+    /* Sembunyikan header tabel di mobile */
+    display: grid !important; 
+}
+
+/* Fix Styling Mobile */
+@media (max-width: 768px) {
+    /* Sembunyikan header tabel di mobile agar tidak ganda */
+    .table-header-desktop {
+        display: none !important;
+    }
+    
+    /* Subtitle (Paspor) di mobile */
+    .table-subtitle {
+        margin-top: 25px;
+        font-size: 1.1rem;
+        width: 100%;
+        text-align: center;
+        border-radius: 8px;
+        padding: 10px 0;
+        background: #f0f2f5;
+    }
+}
+
+/* --- STYLING KHUSUS HARGA WNI/PASPOR INDONESIA --- */
+
+/* Latar belakang baris WNI */
+.id-promo-row {
+  background-color: #f7f3e8; /* Kuning sangat muda */
+  border-radius: 4px;
+}
+
+/* Warna teks label WNI */
+.id-promo-row strong {
+    color: #4a4a4a;
+}
+
+/* Tombol Pesan WNI */
+.btn-book-small.wni-promo-btn {
+    background: var(--primary-orange);
+    color: white;
+    border-color: var(--primary-orange);
+}
+.btn-book-small.wni-promo-btn:hover {
+    background: var(--primary-orange-hover);
+    color: white;
+}
+
+/* Tombol VIP Class (Contoh: Putri Anggreni yang memang VIP) */
+.btn-book-small.vip { 
+    background: #222;
+    border-color: #222;
+    color: #FFD700; /* Emas */
+}
+
+/* Subtitle (Khusus untuk WNI) */
+.table-subtitle {
+    /* ... (Tetap sama, ini sudah membedakan WNI dari subtitle biasa) ... */
+}
+
+/* ... di dalam .carrier-info ... */
+
+.route-badge {
+  /* ... (styling lama) ... */
+}
+
+/* STYLE BARU untuk Subteks Kota */
+.route-city-context {
+    display: block;
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 2px;
+}
+
+/* --- STYLING SUBHEADER HARGA --- */
+
+/* Base Style untuk Subtitle */
+.table-subtitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Style Khusus: Paspor Asing (Foreigner) */
+.table-subtitle {
+  background-color: #f1f5f9; /* Abu-abu kebiruan sangat muda */
+  color: #475569; /* Abu-abu gelap elegan */
+  border-left: 4px solid #94a3b8; /* Aksen garis di kiri */
+}
+
+/* Style Khusus: Paspor Indonesia (WNI) / Promo */
+.promo-subtitle {
+  background-color: #fff7ed; /* Oranye sangat muda */
+  color: #ca5d03; /* Oranye gelap */
+  border-left: 4px solid #F29F05; /* Aksen garis oranye */
+  margin-top: 20px; /* Jarak lebih jauh dari seksi atasnya */
+}
+
+/* Style Khusus: VIP Murni (Putri Anggreni) */
+.vip-subtitle {
+    background-color: #333;
+    color: #FFD700; /* Emas */
+    border-left: 4px solid #FFD700;
+}

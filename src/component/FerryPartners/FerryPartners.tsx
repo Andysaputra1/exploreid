@@ -141,6 +141,8 @@ const FerryPartners: React.FC = () => {
                 time={item.time}
                 prices={item.prices}
                 note={item.note}
+                fromPort={item.fromPort} // TAMBAHAN
+                toPort={item.toPort}
               />
             ))
           ) : (
