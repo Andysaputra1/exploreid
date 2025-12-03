@@ -133,9 +133,7 @@ const TopDestinations: React.FC = () => {
                     <div className="sch-right">
                       <span className="sch-time">{sch.time} WIB</span>
                       {/* PERBAIKAN DI SINI: Akses prices.adult.oneWay */}
-                      <span className="sch-price">
-                        IDR {sch.prices.adult.oneWay.toLocaleString()}
-                      </span>
+                      <span className="sch-price">IDR {sch.prices.adult.oneWay.toLocaleString()}</span>
                     </div>
                   </div>
                 ))

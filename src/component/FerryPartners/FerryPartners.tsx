@@ -2,41 +2,52 @@ import React, { useState } from 'react';
 import FerryCard from './FerryCard';
 import './FerryPartners.css';
 
-// Import data pusat
+// Import data
 import { ferrySchedules } from '../../data/FerryData';
 
 const FerryPartners: React.FC = () => {
+  // Default State (Pastikan stringnya sama persis dengan di data)
   const [filterOrigin, setFilterOrigin] = useState("Batam");
   const [filterDest, setFilterDest] = useState("Singapura");
   const [sortBy, setSortBy] = useState("time"); 
 
+  // LOGIC FILTERING
   const filteredData = ferrySchedules
+    .filter(item => {
+      // Pastikan pencocokan string benar-benar sama
+      return item.from === filterOrigin && item.to === filterDest;
+    })
     .sort((a, b) => {
-          if (sortBy === 'price') {
-            // Bandingkan harga termurah (Adult One Way)
-            return a.prices.adult.oneWay - b.prices.adult.oneWay;
-          }
-          return a.time.localeCompare(b.time);
-        });
+      if (sortBy === 'price') return a.prices.adult.oneWay - b.prices.adult.oneWay;
+      return a.time.localeCompare(b.time);
+    });
 
   return (
     <section id="schedule" className="schedule-section">
       <div className="container">
         
-        {/* HEADER SECTION (JUDUL & FILTER) */}
+        {/* Header */}
         <div className="schedule-header">
-          
-          {/* BAGIAN 1: JUDUL & DESKRIPSI (INI YANG HILANG KEMARIN) */}
           <div>
             <h2 className="section-title">Jadwal Kapal & Harga</h2>
             <p className="section-desc">Pilih rute perjalanan Anda dan temukan penawaran terbaik.</p>
           </div>
 
-          {/* BAGIAN 2: KOTAK FILTER */}
+          {/* FILTER CONTROLS */}
           <div className="filter-controls">
+            
+            {/* DROPDOWN DARI (ASAL) */}
             <div className="select-group">
               <label>Dari</label>
-              <select value={filterOrigin} onChange={(e) => setFilterOrigin(e.target.value)}>
+              <select 
+                value={filterOrigin} 
+                onChange={(e) => {
+                  setFilterOrigin(e.target.value);
+                  // Opsional: Reset tujuan biar user ga bingung kalau rute ga ada
+                  // setFilterDest(""); 
+                }}
+              >
+                {/* Value harus sama persis dengan field 'from' di ferryData.ts */}
                 <option value="Batam">Batam</option>
                 <option value="Singapura">Singapura</option>
                 <option value="Johor Bahru">Johor Bahru</option>
@@ -46,6 +57,7 @@ const FerryPartners: React.FC = () => {
             
             <div className="arrow-icon">➝</div>
 
+            {/* DROPDOWN KE (TUJUAN) */}
             <div className="select-group">
               <label>Ke</label>
               <select value={filterDest} onChange={(e) => setFilterDest(e.target.value)}>
@@ -58,7 +70,7 @@ const FerryPartners: React.FC = () => {
           </div>
         </div>
 
-        {/* TAB SORTING */}
+        {/* Sorting Tabs */}
         <div className="sort-tabs">
           <button 
             className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`}
@@ -74,7 +86,7 @@ const FerryPartners: React.FC = () => {
           </button>
         </div>
 
-        {/* LIST RESULT */}
+        {/* HASIL FILTER */}
         <div className="schedule-list">
           {filteredData.length > 0 ? (
             filteredData.map(item => (
@@ -85,12 +97,18 @@ const FerryPartners: React.FC = () => {
                 origin={item.from}
                 destination={item.to}
                 time={item.time}
-                prices={item.prices} // <--- Kirim object prices utuh
+                prices={item.prices}
+                note={item.note}
               />
             ))
           ) : (
+            // PESAN JIKA DATA KOSONG (PENTING!)
             <div className="empty-state">
-              <p>Maaf, tidak ada jadwal kapal untuk rute ini.</p>
+              <h3>Tidak ada jadwal ditemukan 😔</h3>
+              <p>
+                Belum ada jadwal kapal tersedia dari <strong>{filterOrigin}</strong> ke <strong>{filterDest}</strong>.
+                <br/>Silakan coba ganti rute lain.
+              </p>
             </div>
           )}
         </div>

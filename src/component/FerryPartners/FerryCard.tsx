@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './FerryCard.css';
-import { TicketClasses } from '../../data/FerryData'; // Import interface tadi
+import { TicketClasses } from '../../data/FerryData'; // Pastikan nama file datanya benar (ferryData atau FerryData)
 
 interface FerryProps {
   name: string;
@@ -8,16 +8,17 @@ interface FerryProps {
   origin: string;
   destination: string;
   time: string;
-  prices: TicketClasses; // Terima object harga
+  prices: TicketClasses;
+  note?: string; // Tanda tanya di sini BENAR (artinya props opsional)
 }
 
-const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, time, prices }) => {
-  const [isOpen, setIsOpen] = useState(false); // State untuk buka/tutup detail
+const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, time, prices, note }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className={`ticket-card-wrapper ${isOpen ? 'open' : ''}`}>
       
-      {/* BAGIAN UTAMA KARTU (SELALU MUNCUL) */}
+      {/* HEADER KARTU */}
       <div className="ticket-card">
         <div className="ticket-main">
           <div className="carrier-logo">
@@ -40,19 +41,17 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
           <div className="price-display">
             <span className="label-start">Mulai dari</span>
             <span className="currency">IDR</span>
-            {/* Tampilkan harga termurah (Adult One Way) */}
             <span className="amount">{prices.adult.oneWay.toLocaleString('id-ID')}</span>
           </div>
           
           <button className="btn-select" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? 'Tutup' : 'Pilih'} 
-            {/* Panah naik/turun */}
             <span className={`arrow ${isOpen ? 'up' : 'down'}`}>▼</span>
           </button>
         </div>
       </div>
 
-      {/* BAGIAN DETAIL HARGA (MUNCUL SAAT DIKLIK) */}
+      {/* DETAIL DROPDOWN */}
       {isOpen && (
         <div className="ticket-details">
           <div className="price-table">
@@ -65,7 +64,7 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
               <div className="p-col action">Aksi</div>
             </div>
 
-            {/* Baris 1: Regular Dewasa */}
+            {/* 1. Baris: Regular Dewasa */}
             <div className="p-row">
               <div className="p-col"><strong>Dewasa (Regular)</strong></div>
               <div className="p-col">Rp {prices.adult.oneWay.toLocaleString()}</div>
@@ -73,7 +72,7 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
               <div className="p-col action"><button className="btn-book-small">Pesan</button></div>
             </div>
 
-            {/* Baris 2: Regular Anak */}
+            {/* 2. Baris: Regular Anak */}
             <div className="p-row">
               <div className="p-col"><strong>Anak (Regular)</strong></div>
               <div className="p-col">Rp {prices.child.oneWay.toLocaleString()}</div>
@@ -81,12 +80,22 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
               <div className="p-col action"><button className="btn-book-small">Pesan</button></div>
             </div>
 
-            {/* Baris 3: VIP (Jika Ada) */}
+            {/* 3. Baris: VIP Dewasa (Jika Ada) */}
             {prices.vipAdult && (
               <div className="p-row vip-row">
-                <div className="p-col"><strong>👑 VIP Class</strong></div>
+                <div className="p-col"><strong>👑 VIP Dewasa</strong></div>
                 <div className="p-col">Rp {prices.vipAdult.oneWay.toLocaleString()}</div>
                 <div className="p-col">Rp {prices.vipAdult.twoWay.toLocaleString()}</div>
+                <div className="p-col action"><button className="btn-book-small vip">Pesan VIP</button></div>
+              </div>
+            )}
+
+            {/* 4. Baris: VIP Anak (TAMBAHAN BARU) */}
+            {prices.vipChild && (
+              <div className="p-row vip-row">
+                <div className="p-col"><strong>👑 VIP Anak</strong></div>
+                <div className="p-col">Rp {prices.vipChild.oneWay.toLocaleString()}</div>
+                <div className="p-col">Rp {prices.vipChild.twoWay.toLocaleString()}</div>
                 <div className="p-col action"><button className="btn-book-small vip">Pesan VIP</button></div>
               </div>
             )}
@@ -94,7 +103,8 @@ const FerryCard: React.FC<FerryProps> = ({ name, image, origin, destination, tim
           </div>
           
           <div className="detail-footer">
-            <p>*Harga sudah termasuk pajak pelabuhan (Tax Batam).</p>
+            {/* PERBAIKAN DI SINI: Gunakan spasi yang benar atau OR operator */}
+            <p>{note || "*Harga dapat berubah sewaktu-waktu."}</p>
           </div>
         </div>
       )}
