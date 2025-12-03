@@ -1,32 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import FerryCard from './FerryCard';
 import './FerryPartners.css';
-
-// IMPORT DATA PUSAT
-import { ferrySchedules } from '../../data/ferryData';
+import { ferrySchedules } from '../../data/FerryData';
 
 const FerryPartners: React.FC = () => {
-  // State Default
   const [filterOrigin, setFilterOrigin] = useState("Batam");
   const [filterDest, setFilterDest] = useState("Singapura");
   const [sortBy, setSortBy] = useState("time"); 
+  
+  // State Filter Operator
+  const [selectedOperator, setSelectedOperator] = useState('All'); 
 
-  // Fungsi Swap Ports
   const handleSwapPorts = () => {
-    // Menukar nilai state Origin dan Destination
     setFilterOrigin(filterDest);
     setFilterDest(filterOrigin);
   };
 
-  // LOGIC FILTERING & SORTING (Harga termurah adalah Adult One Way)
+  // --- LOGIC BARU: MENDAPATKAN OPERATOR YANG RELEVAN SAJA ---
+  const uniqueOperators = useMemo(() => {
+    // 1. Filter jadwal hanya untuk rute yang sedang dipilih
+    const relevantSchedules = ferrySchedules.filter(
+      item => item.from === filterOrigin && item.to === filterDest
+    );
+    
+    // 2. Ambil daftar nama operator yang unik dari jadwal yang relevan
+    const operators = relevantSchedules.map(sch => sch.ferry);
+    
+    // 3. Kembalikan array unik, selalu sertakan 'All'
+    return ['All', ...new Set(operators)];
+  }, [filterOrigin, filterDest]); // Dependencies: Berubah saat rute (dari/ke) berubah
+  // -----------------------------------------------------------
+
+  // EFFECT BARU: Pastikan filter operator reset ke 'All' jika operator yang dipilih 
+  // tidak ada di rute yang baru (misal: pindah rute, operator lama hilang)
+  useEffect(() => {
+    if (!uniqueOperators.includes(selectedOperator)) {
+      setSelectedOperator('All');
+    }
+  }, [uniqueOperators, selectedOperator]);
+
+
+  // LOGIC FILTERING & SORTING 
   const filteredData = ferrySchedules
     .filter(item => item.from === filterOrigin && item.to === filterDest)
+    .filter(item => selectedOperator === 'All' || item.ferry === selectedOperator)
     .sort((a, b) => {
       if (sortBy === 'price') {
-        // Sorting berdasarkan harga Adult One Way termurah
         return a.prices.adult.oneWay - b.prices.adult.oneWay;
       }
-      // Sorting berdasarkan waktu
       return a.time.localeCompare(b.time);
     });
 
@@ -34,25 +55,19 @@ const FerryPartners: React.FC = () => {
     <section id="schedule" className="schedule-section">
       <div className="container">
         
-        {/* HEADER SECTION (JUDUL & FILTER) */}
+        {/* HEADER SECTION (JUDUL & FILTER RUTE) */}
         <div className="schedule-header">
-          
-          {/* JUDUL DAN DESKRIPSI */}
           <div>
             <h2 className="section-title">Jadwal Kapal & Harga</h2>
             <p className="section-desc">Pilih rute perjalanan Anda dan temukan penawaran terbaik.</p>
           </div>
 
-          {/* FILTER CONTROLS */}
+          {/* FILTER KONTROL RUTE (Dropdowns) */}
           <div className="filter-controls">
             
-            {/* DROPDOWN DARI (ASAL) */}
             <div className="select-group">
               <label>Dari</label>
-              <select 
-                value={filterOrigin} 
-                onChange={(e) => setFilterOrigin(e.target.value)}
-              >
+              <select value={filterOrigin} onChange={(e) => setFilterOrigin(e.target.value)}>
                 <option value="Batam">Batam</option>
                 <option value="Singapura">Singapura</option>
                 <option value="Johor Bahru">Johor Bahru</option>
@@ -60,7 +75,6 @@ const FerryPartners: React.FC = () => {
               </select>
             </div>
             
-            {/* TOMBOL SWAP PANAH BERPUTAR */}
             <button className="swap-btn" onClick={handleSwapPorts}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="16 3 21 3 21 8"></polyline><line x1="21" y1="3" x2="14" y2="10"></line>
@@ -68,7 +82,6 @@ const FerryPartners: React.FC = () => {
               </svg>
             </button>
 
-            {/* DROPDOWN KE (TUJUAN) */}
             <div className="select-group">
               <label>Ke</label>
               <select value={filterDest} onChange={(e) => setFilterDest(e.target.value)}>
@@ -81,20 +94,38 @@ const FerryPartners: React.FC = () => {
           </div>
         </div>
 
-        {/* TAB SORTING */}
-        <div className="sort-tabs">
-          <button 
-            className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`}
-            onClick={() => setSortBy('time')}
-          >
-            🕒 Waktu Paling Pagi
-          </button>
-          <button 
-            className={`tab-btn ${sortBy === 'price' ? 'active' : ''}`}
-            onClick={() => setSortBy('price')}
-          >
-            💲 Harga Termurah
-          </button>
+        {/* CONTAINER SORTING & FILTER OPERATOR */}
+        <div className="filter-sort-bar">
+          
+          {/* 1. SORTING TABS (Waktu & Harga) */}
+          <div className="sort-tabs">
+            <button 
+              className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`}
+              onClick={() => { setSortBy('time'); }} 
+            >
+              🕒 Waktu Paling Pagi
+            </button>
+            <button 
+              className={`tab-btn ${sortBy === 'price' ? 'active' : ''}`}
+              onClick={() => { setSortBy('price'); }} 
+            >
+              💲 Harga Termurah
+            </button>
+          </div>
+          
+          {/* 2. FILTER OPERATOR (PILL BUTTONS) */}
+          <div className="operator-pills">
+            {uniqueOperators.map(op => (
+              <button 
+                key={op}
+                className={`op-pill ${selectedOperator === op ? 'active' : ''}`}
+                onClick={() => setSelectedOperator(op)}
+              >
+                {op === 'All' ? 'Semua Kapal' : op}
+              </button>
+            ))}
+          </div>
+
         </div>
 
         {/* LIST RESULT */}
@@ -108,16 +139,17 @@ const FerryPartners: React.FC = () => {
                 origin={item.from}
                 destination={item.to}
                 time={item.time}
-                prices={item.prices} // Passing object harga detail
-                note={item.note}     // Passing disclaimer
+                prices={item.prices}
+                note={item.note}
               />
             ))
           ) : (
             <div className="empty-state">
               <h3>Tidak ada jadwal ditemukan 😔</h3>
               <p>
-                Belum ada jadwal kapal tersedia dari <strong>{filterOrigin}</strong> ke <strong>{filterDest}</strong>.
-                <br/>Silakan coba ganti rute lain.
+                Rute dari <strong>{filterOrigin}</strong> ke <strong>{filterDest}</strong> 
+                {selectedOperator !== 'All' && <span> dengan operator {selectedOperator}</span>}
+                <br/>tidak tersedia.
               </p>
             </div>
           )}

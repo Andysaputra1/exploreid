@@ -1,6 +1,10 @@
+/* =========================================
+   1. DESKTOP BASE LAYOUT
+   ========================================= */
+
 .schedule-section {
   padding: 80px 0;
-  background-color: #F8F9FA; /* Abu-abu muda biar kontras sama kartu putih */
+  background-color: #F8F9FA;
 }
 
 .section-title {
@@ -15,7 +19,7 @@
   margin-bottom: 30px;
 }
 
-/* Controls Header */
+/* Header (Judul & Filter Rute) */
 .schedule-header {
   display: flex;
   justify-content: space-between;
@@ -25,7 +29,7 @@
   margin-bottom: 40px;
 }
 
-/* Filter Box (Dropdown) */
+/* Filter Rute (Dari/Ke Dropdown) */
 .filter-controls {
   display: flex;
   align-items: center;
@@ -59,16 +63,44 @@
   min-width: 120px;
 }
 
-.arrow-icon {
+/* Tombol Swap */
+.swap-btn {
+  background: #f0f2f5;
+  border: none;
+  border-radius: 50%;
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
   color: var(--primary-orange);
-  font-weight: bold;
+  cursor: pointer; transition: all 0.3s;
+  margin: 15px 0 0 0; /* Posisikan di tengah vertikal */
+  flex-shrink: 0;
+}
+.swap-btn:hover { background: var(--primary-orange); color: white; transform: rotate(180deg); }
+
+/* Tombol Swap SVG */
+.swap-btn svg { width: 18px; height: 18px; }
+
+/* ... CSS lainnya biarkan sama ... */
+
+/* =========================================
+   2. SORTING DAN FILTER OPERATOR (FIX ALIGNMENT)
+   ========================================= */
+
+.filter-sort-bar {
+  display: flex;
+  flex-wrap: wrap; 
+  /* Kunci Fix: Dorong kedua kelompok (sort tabs dan operator pills) ke ujung */
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 30px;
+  gap: 20px; 
 }
 
-/* Sort Tabs */
+/* Sorting Tabs (Waktu & Harga) */
 .sort-tabs {
   display: flex;
   gap: 15px;
-  margin-bottom: 30px;
+  margin: 0; /* Pastikan tidak ada margin yang mengganggu */
 }
 
 .tab-btn {
@@ -82,53 +114,83 @@
   transition: 0.3s;
 }
 
-.tab-btn:hover {
-  background: #fff;
-  border-color: var(--primary-orange);
+/* Operator Pills */
+.operator-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  /* Tambahan: Pastikan pill buttons menempel di sisi kanan container */
+  justify-content: flex-end; 
 }
 
-.tab-btn.active {
+.op-pill {
+  padding: 8px 15px;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.op-pill.active {
   background: var(--primary-orange);
   color: white;
   border-color: var(--primary-orange);
   box-shadow: 0 4px 10px rgba(242, 159, 5, 0.3);
 }
 
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 50px;
-  color: #888;
-  border: 2px dashed #ddd;
-  border-radius: 20px;
-}
-
-/* Responsive */
+/* --- FIX RESPONSIF MOBILE (Override Agar Tetap Rapi) --- */
 @media (max-width: 768px) {
-  .schedule-header {
-    flex-direction: column;
-  }
-  .filter-controls {
+  
+  .filter-sort-bar {
+    flex-direction: column; /* Tetap tumpuk vertikal di HP */
+    align-items: flex-start;
     width: 100%;
-    justify-content: space-between;
+  }
+  
+  .sort-tabs {
+    width: 100%;
+    margin-bottom: 0;
+    justify-content: space-between; /* Waktu vs Harga rata kiri kanan */
+  }
+
+  .operator-pills {
+    width: 100%;
+    justify-content: flex-start; /* Di HP, semua operator di kiri/awal */
+    overflow-x: auto; 
+    padding-bottom: 10px;
   }
 }
-
-/* --- RESPONSIVE MOBILE (MAIN SCHEDULE) --- */
+/* =========================================
+   3. RESPONSIF MOBILE (< 768px)
+   ========================================= */
 @media (max-width: 768px) {
+  
+  .schedule-section {
+    padding: 40px 0;
+  }
+  
+  /* Header (Judul & Filter Rute) */
   .schedule-header {
     flex-direction: column; /* Judul di atas, Filter di bawah */
+    align-items: flex-start;
   }
 
-  /* Kotak Filter Putih */
+  /* Kotak Filter Rute */
   .filter-controls {
     flex-direction: column; /* Dropdown menumpuk */
     width: 100%;
     align-items: flex-start;
-    border-radius: 20px; /* Kurangi lengkungan */
+    border-radius: 20px;
     gap: 15px;
+    padding: 15px 20px;
   }
-
+  
   .select-group {
     width: 100%; /* Dropdown full width */
     border-bottom: 1px solid #eee;
@@ -137,76 +199,43 @@
   
   .select-group:last-child {
     border-bottom: none;
+    padding-bottom: 0;
   }
 
-  .arrow-icon {
-    display: none; /* Sembunyikan panah tengah di HP biar rapi */
+  /* Tombol Swap di HP */
+  .swap-btn {
+    display: none; /* Sembunyikan tombol swap di HP, atau bisa diletakkan di tengah */
   }
-  
-  /* Tombol Sort (Waktu/Harga) */
-  .sort-tabs {
-    width: 100%;
-    overflow-x: auto; /* Bisa digeser kalo layarnya kekecilan */
-    padding-bottom: 10px;
-  }
-  
-  .tab-btn {
-    white-space: nowrap; /* Teks jangan turun baris */
-    font-size: 0.85rem;
-  }
-}
 
-/* ... CSS lainnya biarkan sama ... */
-
-/* --- STYLING BARU UNTUK TOMBOL SWAP --- */
-.swap-btn {
-  background: #f0f2f5;
-  border: none;
-  border-radius: 50%;
-  width: 38px; /* Ukuran tombol */
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary-orange);
-  cursor: pointer;
-  transition: all 0.3s;
-  /* Atur posisi vertikalnya agar pas di tengah dropdown */
-  margin: 15px 0 0 0; 
-  flex-shrink: 0;
-}
-
-.swap-btn svg {
-    width: 18px;
-    height: 18px;
-}
-
-/* Efek Hover Keren */
-.swap-btn:hover {
-  background: var(--primary-orange);
-  color: white;
-  transform: rotate(180deg); /* Berputar 180 derajat saat hover */
-}
-
-/* --- FIX MEDIA QUERY MOBILE --- */
-@media (max-width: 768px) {
-  .filter-controls {
-    /* ... lainnya tetap sama ... */
+  /* Filter & Sort Bar */
+  .filter-sort-bar {
+    flex-direction: column; /* Tumpuk vertikal */
+    align-items: flex-start;
     gap: 15px;
   }
   
-  /* Tombol swap jangan ada margin di HP */
-  .swap-btn {
-    margin: 0;
-    width: 32px;
-    height: 32px;
-  }
-  
-  .select-group {
-    /* Di HP, buat dropdown dan tombol swap jadi 1 baris */
-    flex-direction: row;
+  .sort-tabs {
+    width: 100%;
+    margin-bottom: 0;
     justify-content: space-between;
-    align-items: center;
-    padding-bottom: 0;
   }
+
+  /* Operator Pills */
+  .operator-pills {
+    width: 100%;
+    overflow-x: auto; /* Agar bisa digeser horizontal */
+    padding-bottom: 10px;
+  }
+}
+
+/* =========================================
+   4. KODE LAINNYA (NON-LAYOUT)
+   ========================================= */
+
+.empty-state {
+  text-align: center;
+  padding: 50px;
+  color: #888;
+  border: 2px dashed #ddd;
+  border-radius: 20px;
 }
