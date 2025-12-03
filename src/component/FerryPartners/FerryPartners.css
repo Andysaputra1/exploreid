@@ -155,3 +155,58 @@
     font-size: 0.85rem;
   }
 }
+
+/* ... CSS lainnya biarkan sama ... */
+
+/* --- STYLING BARU UNTUK TOMBOL SWAP --- */
+.swap-btn {
+  background: #f0f2f5;
+  border: none;
+  border-radius: 50%;
+  width: 38px; /* Ukuran tombol */
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-orange);
+  cursor: pointer;
+  transition: all 0.3s;
+  /* Atur posisi vertikalnya agar pas di tengah dropdown */
+  margin: 15px 0 0 0; 
+  flex-shrink: 0;
+}
+
+.swap-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Efek Hover Keren */
+.swap-btn:hover {
+  background: var(--primary-orange);
+  color: white;
+  transform: rotate(180deg); /* Berputar 180 derajat saat hover */
+}
+
+/* --- FIX MEDIA QUERY MOBILE --- */
+@media (max-width: 768px) {
+  .filter-controls {
+    /* ... lainnya tetap sama ... */
+    gap: 15px;
+  }
+  
+  /* Tombol swap jangan ada margin di HP */
+  .swap-btn {
+    margin: 0;
+    width: 32px;
+    height: 32px;
+  }
+  
+  .select-group {
+    /* Di HP, buat dropdown dan tombol swap jadi 1 baris */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0;
+  }
+}

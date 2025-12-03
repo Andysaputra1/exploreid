@@ -131,7 +131,15 @@ const TopDestinations: React.FC = () => {
                       <span className="sch-route">{sch.from} ➝ {sch.to}</span>
                     </div>
                     <div className="sch-right">
-                      <span className="sch-time">{sch.time} WIB</span>
+                      <div className="time-wrapper">
+                        <span className="sch-time">{sch.time}</span>
+                        {/* Tambahkan logika disclaimer kecil */}
+                        <span className="time-zone-note">
+                          {sch.time.includes('SGT') ? '(Waktu Singapura)' : 
+                          sch.time.includes('MYT') ? '(Waktu Malaysia)' : 
+                          '(Waktu Indonesia Barat)'}
+                        </span>
+                      </div>
                       {/* PERBAIKAN DI SINI: Akses prices.adult.oneWay */}
                       <span className="sch-price">IDR {sch.prices.adult.oneWay.toLocaleString()}</span>
                     </div>

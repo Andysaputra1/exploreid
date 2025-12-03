@@ -2,23 +2,31 @@ import React, { useState } from 'react';
 import FerryCard from './FerryCard';
 import './FerryPartners.css';
 
-// Import data
-import { ferrySchedules } from '../../data/FerryData';
+// IMPORT DATA PUSAT
+import { ferrySchedules } from '../../data/ferryData';
 
 const FerryPartners: React.FC = () => {
-  // Default State (Pastikan stringnya sama persis dengan di data)
+  // State Default
   const [filterOrigin, setFilterOrigin] = useState("Batam");
   const [filterDest, setFilterDest] = useState("Singapura");
   const [sortBy, setSortBy] = useState("time"); 
 
-  // LOGIC FILTERING
+  // Fungsi Swap Ports
+  const handleSwapPorts = () => {
+    // Menukar nilai state Origin dan Destination
+    setFilterOrigin(filterDest);
+    setFilterDest(filterOrigin);
+  };
+
+  // LOGIC FILTERING & SORTING (Harga termurah adalah Adult One Way)
   const filteredData = ferrySchedules
-    .filter(item => {
-      // Pastikan pencocokan string benar-benar sama
-      return item.from === filterOrigin && item.to === filterDest;
-    })
+    .filter(item => item.from === filterOrigin && item.to === filterDest)
     .sort((a, b) => {
-      if (sortBy === 'price') return a.prices.adult.oneWay - b.prices.adult.oneWay;
+      if (sortBy === 'price') {
+        // Sorting berdasarkan harga Adult One Way termurah
+        return a.prices.adult.oneWay - b.prices.adult.oneWay;
+      }
+      // Sorting berdasarkan waktu
       return a.time.localeCompare(b.time);
     });
 
@@ -26,8 +34,10 @@ const FerryPartners: React.FC = () => {
     <section id="schedule" className="schedule-section">
       <div className="container">
         
-        {/* Header */}
+        {/* HEADER SECTION (JUDUL & FILTER) */}
         <div className="schedule-header">
+          
+          {/* JUDUL DAN DESKRIPSI */}
           <div>
             <h2 className="section-title">Jadwal Kapal & Harga</h2>
             <p className="section-desc">Pilih rute perjalanan Anda dan temukan penawaran terbaik.</p>
@@ -41,13 +51,8 @@ const FerryPartners: React.FC = () => {
               <label>Dari</label>
               <select 
                 value={filterOrigin} 
-                onChange={(e) => {
-                  setFilterOrigin(e.target.value);
-                  // Opsional: Reset tujuan biar user ga bingung kalau rute ga ada
-                  // setFilterDest(""); 
-                }}
+                onChange={(e) => setFilterOrigin(e.target.value)}
               >
-                {/* Value harus sama persis dengan field 'from' di ferryData.ts */}
                 <option value="Batam">Batam</option>
                 <option value="Singapura">Singapura</option>
                 <option value="Johor Bahru">Johor Bahru</option>
@@ -55,7 +60,13 @@ const FerryPartners: React.FC = () => {
               </select>
             </div>
             
-            <div className="arrow-icon">➝</div>
+            {/* TOMBOL SWAP PANAH BERPUTAR */}
+            <button className="swap-btn" onClick={handleSwapPorts}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="16 3 21 3 21 8"></polyline><line x1="21" y1="3" x2="14" y2="10"></line>
+                <polyline points="8 21 3 21 3 16"></polyline><line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+            </button>
 
             {/* DROPDOWN KE (TUJUAN) */}
             <div className="select-group">
@@ -70,7 +81,7 @@ const FerryPartners: React.FC = () => {
           </div>
         </div>
 
-        {/* Sorting Tabs */}
+        {/* TAB SORTING */}
         <div className="sort-tabs">
           <button 
             className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`}
@@ -86,7 +97,7 @@ const FerryPartners: React.FC = () => {
           </button>
         </div>
 
-        {/* HASIL FILTER */}
+        {/* LIST RESULT */}
         <div className="schedule-list">
           {filteredData.length > 0 ? (
             filteredData.map(item => (
@@ -97,12 +108,11 @@ const FerryPartners: React.FC = () => {
                 origin={item.from}
                 destination={item.to}
                 time={item.time}
-                prices={item.prices}
-                note={item.note}
+                prices={item.prices} // Passing object harga detail
+                note={item.note}     // Passing disclaimer
               />
             ))
           ) : (
-            // PESAN JIKA DATA KOSONG (PENTING!)
             <div className="empty-state">
               <h3>Tidak ada jadwal ditemukan 😔</h3>
               <p>

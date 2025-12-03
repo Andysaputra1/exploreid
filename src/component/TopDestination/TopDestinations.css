@@ -443,3 +443,13 @@
     gap: 25px;
   }
 }
+.time-wrapper {
+  text-align: right;
+}
+.time-zone-note {
+  display: block;
+  font-size: 0.7rem;
+  color: #888;
+  font-style: italic;
+  margin-top: -2px;
+}
