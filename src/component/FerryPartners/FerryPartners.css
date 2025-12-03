@@ -1,5 +1,5 @@
 /* =========================================
-   1. DESKTOP BASE LAYOUT
+   1. LAYOUT UTAMA (DESKTOP)
    ========================================= */
 
 .schedule-section {
@@ -29,10 +29,14 @@
   margin-bottom: 40px;
 }
 
-/* Filter Rute (Dari/Ke Dropdown) */
+
+/* =========================================
+   2. FILTER CONTROLS (DROPDOWN RUTE)
+   ========================================= */
+
 .filter-controls {
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Label dan tombol sejajar bawah */
   background: white;
   padding: 15px 25px;
   border-radius: 50px;
@@ -40,11 +44,13 @@
   gap: 20px;
 }
 
-.select-group {
-  display: flex;
-  flex-direction: column;
+/* Wrapper untuk Custom Dropdown (PortDropdown) */
+.select-group-custom {
+  flex: 1; /* Biar dropdown ambil lebar rata */
+  min-width: 250px; /* Minimal lebar biar ga kepet */
 }
 
+/* Label Dropdown (Untuk fallback/select biasa) */
 .select-group label {
   font-size: 0.75rem;
   font-weight: 700;
@@ -52,18 +58,7 @@
   margin-bottom: 2px;
 }
 
-.select-group select {
-  border: none;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--primary-dark);
-  outline: none;
-  cursor: pointer;
-  background: transparent;
-  min-width: 120px;
-}
-
-/* Tombol Swap */
+/* Tombol Swap (Panah) */
 .swap-btn {
   background: #f0f2f5;
   border: none;
@@ -72,16 +67,19 @@
   display: flex; align-items: center; justify-content: center;
   color: var(--primary-orange);
   cursor: pointer; transition: all 0.3s;
-  margin: 15px 0 0 0; /* Posisikan di tengah vertikal */
+  margin-bottom: 5px; /* Penyesuaian posisi vertikal */
   flex-shrink: 0;
 }
-.swap-btn:hover { background: var(--primary-orange); color: white; transform: rotate(180deg); }
-
+.swap-btn:hover { 
+  background: var(--primary-orange); 
+  color: white; 
+  transform: rotate(180deg); 
+}
 .swap-btn svg { width: 18px; height: 18px; }
 
 
 /* =========================================
-   2. SORTING DAN FILTER OPERATOR
+   3. SORTING DAN FILTER OPERATOR (BUTTONS)
    ========================================= */
 
 .filter-sort-bar {
@@ -93,49 +91,12 @@
   gap: 20px; 
 }
 
-/* Sorting Tabs (Waktu & Harga) */
 .sort-tabs {
   display: flex;
   gap: 15px;
   margin: 0; 
 }
 
-/* Tab Button Styling */
-.tab-btn {
-  padding: 10px 20px;
-  border-radius: 50px;
-  border: 1px solid #ddd;
-  background: transparent;
-  color: #666;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease; /* Transisi agar hover halus */
-}
-
-/* State: INACTIVE Hover */
-.tab-btn:hover {
-  background: #fff;
-  border-color: var(--primary-orange);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* State: ACTIVE */
-.tab-btn.active {
-  background: var(--primary-orange);
-  color: white;
-  border-color: var(--primary-orange);
-  box-shadow: 0 4px 10px rgba(242, 159, 5, 0.3);
-}
-
-/* State: ACTIVE Hover (Mempertahankan ACTIVE state + efek terangkat) */
-.tab-btn.active:hover {
-  background: var(--primary-orange); 
-  transform: translateY(-1px); 
-  box-shadow: 0 6px 15px rgba(242, 159, 5, 0.4); 
-}
-
-
-/* Operator Pills */
 .operator-pills {
   display: flex;
   flex-wrap: wrap;
@@ -144,106 +105,51 @@
   justify-content: flex-end; 
 }
 
-.op-pill {
-  padding: 8px 15px;
+/* --- BASE STYLE TOMBOL (SORT & OPERATOR) --- */
+/* Menggabungkan style tab-btn dan op-pill agar konsisten */
+.tab-btn, .op-pill {
+  padding: 10px 24px; /* Ukuran tombol yang lebih enak dilihat */
   border-radius: 50px;
-  border: 1px solid #ddd;
-  background: white;
-  color: #666;
-  font-weight: 500;
-  cursor: pointer;
+  font-weight: 600;
   font-size: 0.9rem;
-  transition: all 0.2s;
+  border: 1px solid #edf2f7;
+  background-color: white;
+  color: #666;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
-/* State: Operator Pill Hover */
-.op-pill:hover {
-  background: #f0f2f5;
+/* STATE: HOVER (Inactive) */
+.tab-btn:hover, .op-pill:hover {
+  background: #fff;
   border-color: var(--primary-orange);
+  color: var(--primary-orange);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* State: Operator Pill Active */
-.op-pill.active {
-  background: var(--primary-orange);
+/* STATE: ACTIVE (Selected) */
+.tab-btn.active, .op-pill.active {
+  background-color: #2d3748; /* Warna Gelap Elegan (Kontras dgn Oranye) */
   color: white;
-  border-color: var(--primary-orange);
-  box-shadow: 0 4px 10px rgba(242, 159, 5, 0.3);
+  border-color: #2d3748;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* State: Operator Pill Active Hover */
-.op-pill.active:hover {
-  transform: translateY(-1px); 
-}
-
-
-/* =========================================
-   3. RESPONSIVE MOBILE (< 768px)
-   ========================================= */
-@media (max-width: 768px) {
-  
-  .schedule-section {
-    padding: 40px 0;
-  }
-  
-  /* Header (Judul & Filter Rute) */
-  .schedule-header {
-    flex-direction: column; 
-    align-items: flex-start;
-  }
-
-  /* Kotak Filter Rute */
-  .filter-controls {
-    flex-direction: column; 
-    width: 100%;
-    align-items: flex-start;
-    border-radius: 20px;
-    gap: 15px;
-    padding: 15px 20px;
-  }
-  
-  .select-group {
-    width: 100%; 
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-  }
-  
-  .select-group:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  /* Tombol Swap di HP */
-  .swap-btn {
-    display: none; 
-  }
-
-  /* Filter & Sort Bar */
-  .filter-sort-bar {
-    flex-direction: column; 
-    align-items: flex-start;
-    gap: 15px;
-    width: 100%;
-  }
-  
-  .sort-tabs {
-    width: 100%;
-    margin-bottom: 0;
-    justify-content: space-between;
-  }
-
-  /* Operator Pills */
-  .operator-pills {
-    width: 100%;
-    justify-content: flex-start;
-    overflow-x: auto; 
-    padding-bottom: 10px;
-  }
+/* STATE: ACTIVE HOVER (Efek saat tombol aktif disentuh) */
+.tab-btn.active:hover, .op-pill.active:hover {
+  /* Tetap gelap, tapi naik dikit */
+  background-color: #1a202c;
+  border-color: #1a202c;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
 }
 
 
 /* =========================================
-   4. KODE LAINNYA (NON-LAYOUT)
+   4. ELEMENT LAINNYA
    ========================================= */
 
 .empty-state {
@@ -252,4 +158,72 @@
   color: #888;
   border: 2px dashed #ddd;
   border-radius: 20px;
+  background-color: white;
+}
+
+
+/* =========================================
+   5. RESPONSIVE MOBILE (< 768px)
+   ========================================= */
+
+@media (max-width: 768px) {
+  
+  .schedule-section {
+    padding: 40px 0;
+  }
+  
+  /* Header (Judul) */
+  .schedule-header {
+    flex-direction: column; 
+    align-items: flex-start;
+  }
+
+  /* Filter Box (Rute) */
+  .filter-controls {
+    flex-direction: column; 
+    width: 100%;
+    align-items: stretch; /* Agar anak elemen full width */
+    border-radius: 20px;
+    gap: 15px;
+    padding: 20px;
+  }
+  
+  .select-group-custom {
+    width: 100%; 
+    margin-bottom: 0; /* Reset margin */
+  }
+
+  /* Tombol Swap Sembunyi di HP */
+  .swap-btn {
+    display: none; 
+  }
+
+  /* Filter & Sort Bar (Tombol Bawah) */
+  .filter-sort-bar {
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .sort-tabs {
+    width: 100%;
+    margin-bottom: 0;
+    justify-content: space-between; /* Tombol Waktu & Harga rata kiri-kanan */
+  }
+
+  .tab-btn {
+    flex: 1; /* Tombol sort membagi rata lebar layar */
+    text-align: center;
+    padding: 10px; /* Sedikit lebih kecil paddingnya di HP */
+    font-size: 0.85rem;
+  }
+
+  .operator-pills {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto; /* Scrollable horizontal */
+    padding-bottom: 10px; /* Ruang untuk scrollbar */
+    flex-wrap: nowrap; /* Paksa satu baris agar bisa discroll */
+  }
 }

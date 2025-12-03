@@ -453,3 +453,40 @@
   font-style: italic;
   margin-top: -2px;
 }
+
+/* ... CSS LAMA BIARKAN ... */
+
+/* --- FILTER BAR DI DALAM MODAL (BARU) --- */
+.dest-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.filter-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.ferry-select {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.9rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  background-color: white;
+}
+
+.ferry-select:focus {
+  border-color: var(--primary-orange);
+}

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import FerryCard from './FerryCard';
 import './FerryPartners.css';
-import { ferrySchedules } from '../../data/FerryData';
-import { PORTS } from '../../data/ports'; // Import data pelabuhan baru
+import { ferrySchedules, TicketClasses } from '../../data/FerryData';
+import { PORTS } from '../../data/ports'; 
+import PortDropdown from '../ui/PortDropdown';
 
 const FerryPartners: React.FC = () => {
-  // Default State (Sekarang menggunakan nama PELABUHAN, bukan Kota)
+  // Default State
   const [filterOrigin, setFilterOrigin] = useState("Batam Centre");
-  const [filterDest, setFilterDest] = useState("HarbourFront"); // Sesuaikan dengan value di PORTS
+  const [filterDest, setFilterDest] = useState("HarbourFront"); 
   const [sortBy, setSortBy] = useState("time"); 
-  
   const [selectedOperator, setSelectedOperator] = useState('All'); 
 
   const handleSwapPorts = () => {
@@ -17,33 +17,65 @@ const FerryPartners: React.FC = () => {
     setFilterDest(filterOrigin);
   };
 
-  // LOGIC FILTERING (Sekarang cek fromPort dan toPort)
+  // --- HELPER 1: Ambil Nilai Waktu Murni ---
+  // Mengubah "08:15 SGT" menjadi angka 815 agar mudah diurutkan
+  const parseTime = (timeStr: string) => {
+    // Ambil 5 karakter pertama (jam:menit), buang titik dua
+    const cleanTime = timeStr.substring(0, 5).replace(':', ''); 
+    return parseInt(cleanTime); 
+  };
+
+  // --- HELPER 2: Ambil Harga Termurah ---
+  // Mencari harga paling rendah dari semua kategori (Dewasa/Anak/WNI)
+  const getLowestPrice = (prices: TicketClasses) => {
+    const allPrices = [
+      prices.adult.oneWay,
+      prices.child.oneWay,
+      prices.wniAdult?.oneWay, // Pakai optional chaining
+      prices.vipAdult?.oneWay
+    ].filter((p): p is number => p !== undefined && p > 0); // Hapus yang kosong
+
+    return Math.min(...allPrices); // Ambil yang paling kecil
+  };
+
+  // 1. Generate Tombol Operator
+  const availableOperators = useMemo(() => {
+    const schedulesOnRoute = ferrySchedules.filter(item => {
+        const matchOrigin = item.fromPort === filterOrigin || item.from === filterOrigin; 
+        const matchDest = item.toPort === filterDest || item.to === filterDest || (filterDest === "HarbourFront" && item.toPort.includes("HarbourFront")); 
+        return matchOrigin && matchDest;
+    });
+    const operators = schedulesOnRoute.map(sch => sch.ferry);
+    return ['All', ...new Set(operators)];
+  }, [filterOrigin, filterDest]); 
+
+  useEffect(() => {
+    if (!availableOperators.includes(selectedOperator)) {
+      setSelectedOperator('All');
+    }
+  }, [filterOrigin, filterDest, availableOperators, selectedOperator]);
+
+
+  // 2. Logic Filtering & Sorting (UPDATED)
   const filteredData = ferrySchedules
     .filter(item => {
-        // Cek Asal: Apakah user pilih pelabuhan spesifik ATAU kota umum?
-        const originMatch = 
-            item.fromPort === filterOrigin || // Cocok pelabuhan spesifik
-            item.from === filterOrigin;       // Cocok kota umum (misal: "Batam")
-
-        // Cek Tujuan: Sama seperti di atas
-        const destMatch = 
-            item.toPort === filterDest || 
-            item.to === filterDest ||
-            (filterDest === "HarbourFront" && item.toPort.includes("HarbourFront")); // Handle variasi nama
-        
-        return originMatch && destMatch;
+        // Filter Rute
+        const matchOrigin = item.fromPort === filterOrigin || item.from === filterOrigin; 
+        const matchDest = item.toPort === filterDest || item.to === filterDest || (filterDest === "HarbourFront" && item.toPort.includes("HarbourFront")); 
+        return matchOrigin && matchDest;
     })
-    .filter(item => selectedOperator === 'All' || item.ferry === selectedOperator)
+    .filter(item => {
+        // Filter Operator
+        return selectedOperator === 'All' || item.ferry === selectedOperator;
+    })
     .sort((a, b) => {
       if (sortBy === 'price') {
-        return a.prices.adult.oneWay - b.prices.adult.oneWay;
+        // Sort berdasarkan harga termurah yang ditemukan
+        return getLowestPrice(a.prices) - getLowestPrice(b.prices);
       }
-      return a.time.localeCompare(b.time);
+      // Sort berdasarkan waktu (parse dulu stringnya)
+      return parseTime(a.time) - parseTime(b.time);
     });
-
-  // Logic Unique Operators (Sama seperti sebelumnya)
-  const uniqueOperators = ['All', ...new Set(filteredData.map(item => item.ferry))];
-
 
   return (
     <section id="schedule" className="schedule-section">
@@ -55,29 +87,13 @@ const FerryPartners: React.FC = () => {
             <p className="section-desc">Cari jadwal berdasarkan pelabuhan asal dan tujuan.</p>
           </div>
 
-          {/* FILTER CONTROLS (GROUPED DROPDOWN) */}
           <div className="filter-controls">
-            
-            {/* DROPDOWN DARI (PELABUHAN) */}
-            <div className="select-group">
-              <label>Dari Pelabuhan</label>
-              <select value={filterOrigin} onChange={(e) => setFilterOrigin(e.target.value)}>
-                
-                <optgroup label="BATAM">
-                    {PORTS.BATAM.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-                <optgroup label="SINGAPURA">
-                    {PORTS.SINGAPURA.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-                <optgroup label="JOHOR (MALAYSIA)">
-                    {PORTS.JOHOR.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-                <optgroup label="KEPRI LAINNYA">
-                    {PORTS.TANJUNG_PINANG.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                    {PORTS.KARIMUN.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-
-              </select>
+            <div className="select-group-custom">
+                <PortDropdown 
+                    label="Dari Pelabuhan"
+                    value={filterOrigin}
+                    onChange={setFilterOrigin}
+                />
             </div>
             
             <button className="swap-btn" onClick={handleSwapPorts}>
@@ -87,38 +103,35 @@ const FerryPartners: React.FC = () => {
               </svg>
             </button>
 
-            {/* DROPDOWN KE (PELABUHAN) */}
-            <div className="select-group">
-              <label>Ke Pelabuhan</label>
-              <select value={filterDest} onChange={(e) => setFilterDest(e.target.value)}>
-                 {/* Sama seperti atas, tampilkan semua opsi */}
-                 <optgroup label="SINGAPURA">
-                    {PORTS.SINGAPURA.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-                <optgroup label="BATAM">
-                    {PORTS.BATAM.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-                <optgroup label="JOHOR (MALAYSIA)">
-                    {PORTS.JOHOR.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-                <optgroup label="KEPRI LAINNYA">
-                    {PORTS.TANJUNG_PINANG.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                    {PORTS.KARIMUN.map(p => <option key={p.value} value={p.value}>{p.name}</option>)}
-                </optgroup>
-              </select>
+            <div className="select-group-custom">
+                <PortDropdown 
+                    label="Ke Pelabuhan"
+                    value={filterDest}
+                    onChange={setFilterDest}
+                />
             </div>
           </div>
         </div>
 
-        {/* Filter Sort Bar (Tetap sama) */}
         <div className="filter-sort-bar">
-            {/* ... (Kode Sort Tabs & Operator Pills sama seperti sebelumnya) ... */}
              <div className="sort-tabs">
-                <button className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`} onClick={() => setSortBy('time')}>🕒 Waktu Paling Pagi</button>
-                <button className={`tab-btn ${sortBy === 'price' ? 'active' : ''}`} onClick={() => setSortBy('price')}>💲 Harga Termurah</button>
+                {/* Tambahkan onClick untuk mengubah state sortBy */}
+                <button 
+                    className={`tab-btn ${sortBy === 'time' ? 'active' : ''}`} 
+                    onClick={() => setSortBy('time')}
+                >
+                    🕒 Waktu Paling Pagi
+                </button>
+                <button 
+                    className={`tab-btn ${sortBy === 'price' ? 'active' : ''}`} 
+                    onClick={() => setSortBy('price')}
+                >
+                    💲 Harga Termurah
+                </button>
              </div>
+             
              <div className="operator-pills">
-                {uniqueOperators.map(op => (
+                {availableOperators.map(op => (
                 <button key={op} className={`op-pill ${selectedOperator === op ? 'active' : ''}`} onClick={() => setSelectedOperator(op)}>
                     {op === 'All' ? 'Semua Kapal' : op}
                 </button>
@@ -126,7 +139,6 @@ const FerryPartners: React.FC = () => {
              </div>
         </div>
 
-        {/* List Result */}
         <div className="schedule-list">
           {filteredData.length > 0 ? (
             filteredData.map(item => (

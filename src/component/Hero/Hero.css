@@ -307,3 +307,46 @@
     padding: 25px; /* Kurangi padding biar muat */
   }
 }
+
+.reservation-card {
+  /* Efek Kaca */
+  background: rgba(255, 255, 255, 0.85); 
+  backdrop-filter: blur(12px); /* Blur background di belakangnya */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  
+  padding: 40px;
+  border-radius: 30px; /* Lebih bulat */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Shadow dalam */
+}
+
+.card-header h3 {
+  font-weight: 800;
+  color: #1a202c;
+  font-size: 1.8rem;
+}
+
+/* Input Field yang Lebih Modern */
+.input-group input {
+  background-color: white;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 14px 20px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #F29F05;
+  box-shadow: 0 0 0 4px rgba(242, 159, 5, 0.15); /* Glow effect */
+  transform: translateY(-2px);
+}
+
+.btn-search {
+  background: #25D366;
+  border-radius: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 10px 20px -5px rgba(37, 211, 102, 0.4);
+}

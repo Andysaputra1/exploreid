@@ -11,7 +11,6 @@ export const PORTS = {
   SINGAPURA: [
     { name: "Semua Pelabuhan Singapura", value: "Singapura" }, // Opsi All
     { name: "HarbourFront", value: "HarbourFront" }, 
-    { name: "HarbourFront Centre", value: "HarbourFront Centre" }, 
     { name: "Tanah Merah", value: "Tanah Merah" },
   ],
   JOHOR: [
